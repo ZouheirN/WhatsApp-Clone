@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:whatsapp_clone/colors.dart';
 
-import '../info.dart';
+import '../../info.dart';
 
 class WebChatAppbar extends StatelessWidget {
   const WebChatAppbar({super.key});
