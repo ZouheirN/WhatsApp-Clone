@@ -60,7 +60,9 @@ class _MobileChatScreenState extends State<MobileChatScreen> {
       // }
     });
 
-    Future.delayed(const Duration(milliseconds: 500), () => scrollToBottom());
+    Future.delayed(const Duration(milliseconds: 500), () {
+      scrollToBottom();
+    });
 
     super.initState();
   }

@@ -61,35 +61,7 @@ class ContactsList extends StatelessWidget {
                       ),
                     );
                   },
-            child: ListTile(
-              leading: CircleAvatar(
-                radius: 30,
-                backgroundImage:
-                    NetworkImage(userData['profilePic'].toString()),
-              ),
-              title: Text(
-                userData['phone'].toString(),
-                style: const TextStyle(
-                  fontSize: 18,
-                ),
-              ),
-              subtitle: Padding(
-                padding: const EdgeInsets.only(top: 6.0),
-                child: Text(
-                  userData['phone'].toString(),
-                  style: const TextStyle(
-                    fontSize: 15,
-                  ),
-                ),
-              ),
-              trailing: Text(
-                userData['time'].toString(),
-                style: const TextStyle(
-                  fontSize: 13,
-                  color: Colors.grey,
-                ),
-              ),
-            ),
+            child: _buildListTile(userData),
           ),
           const Divider(
             color: dividerColor,
@@ -100,5 +72,51 @@ class ContactsList extends StatelessWidget {
     } else {
       return Container();
     }
+  }
+
+  Widget _buildListTile(userData) {
+    return StreamBuilder(
+      stream: _chatService.getLatestMessage(
+          _auth.currentUser!.uid, userData['uid']),
+      builder: (context, snapshot) {
+        final latestMessage =
+            snapshot.data?.docs.last.data() as Map<String, dynamic>?;
+        final message = latestMessage?['message'] ?? '';
+        final time = latestMessage?['timestamp'] ?? '';
+        String parsedTime = '';
+        if (time != '') {
+          parsedTime = time.toDate().toString().substring(11, 16);
+        }
+
+        return ListTile(
+          leading: CircleAvatar(
+            radius: 30,
+            backgroundImage: NetworkImage(userData['profilePic'].toString()),
+          ),
+          title: Text(
+            userData['phone'].toString(),
+            style: const TextStyle(
+              fontSize: 18,
+            ),
+          ),
+          subtitle: Padding(
+            padding: const EdgeInsets.only(top: 6.0),
+            child: Text(
+              message,
+              style: const TextStyle(
+                fontSize: 15,
+              ),
+            ),
+          ),
+          trailing: Text(
+            parsedTime,
+            style: const TextStyle(
+              fontSize: 13,
+              color: Colors.grey,
+            ),
+          ),
+        );
+      },
+    );
   }
 }

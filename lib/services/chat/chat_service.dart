@@ -57,5 +57,17 @@ class ChatService {
         .snapshots();
   }
 
+  Stream<QuerySnapshot> getLatestMessage(String userId, String otherUserId) {
+    List<String> ids = [userId, otherUserId];
+    ids.sort();
+    String chatId = ids.join('_');
 
+    return _firestore
+        .collection('chats')
+        .doc(chatId)
+        .collection('messages')
+        .orderBy('timestamp', descending: true)
+        .limit(1)
+        .snapshots();
+  }
 }
