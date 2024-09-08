@@ -14,8 +14,6 @@ class VerifyPhoneNumberErrorState extends AuthenticationState {
   VerifyPhoneNumberErrorState(this.errorMessage);
 }
 
-class VerifyPhoneNumberSuccessState extends AuthenticationState {}
-
 class VerifyPhoneNumberCodeSentState extends AuthenticationState {
   final String? verificationId;
   final ConfirmationResult? confirmationResult;
