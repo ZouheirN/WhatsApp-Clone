@@ -2,7 +2,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:whatsapp_clone/main.dart';
 
-import '../components/authentication/ui/auth.dart';
+import '../features/authentication/ui/auth.dart';
 
 class ResponsiveLayout extends StatelessWidget {
   const ResponsiveLayout({

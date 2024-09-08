@@ -1,0 +1,88 @@
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:gap/gap.dart';
+
+import '../../../colors.dart';
+import '../bloc/authentication_bloc.dart';
+
+class OtpScreen extends StatefulWidget {
+  final String? verificationId;
+  final ConfirmationResult? confirmationResult;
+
+  const OtpScreen({super.key, this.verificationId, this.confirmationResult});
+
+  @override
+  State<OtpScreen> createState() => _OtpScreenState();
+}
+
+class _OtpScreenState extends State<OtpScreen> {
+  final _otpController = TextEditingController();
+
+  final _authenticationBloc = AuthenticationBloc();
+
+  @override
+  Widget build(BuildContext context) {
+    final isWeb = MediaQuery.of(context).size.width > 600;
+
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('Phone Authentication'),
+        backgroundColor: isWeb ? webAppBarColor : appBarColor,
+      ),
+      body: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          children: [
+            const Text('Enter the OTP sent to your phone',
+                style: TextStyle(fontSize: 20)),
+            const Gap(20),
+            TextField(
+              controller: _otpController,
+              decoration: const InputDecoration(
+                hintText: 'Enter OTP',
+                border: OutlineInputBorder(),
+              ),
+            ),
+            const Gap(20),
+            BlocConsumer<AuthenticationBloc, AuthenticationState>(
+              bloc: _authenticationBloc,
+              listener: (context, state) {
+                if (state is VerifyOtpSuccessState) {
+                  Navigator.pop(context);
+                } else if (state is VerifyOtpErrorState) {
+                  ScaffoldMessenger.of(context).clearSnackBars();
+                  ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(content: Text(state.errorMessage)));
+                }
+              },
+              builder: (context, state) {
+                if (state is VerifyOtpLoadingState) {
+                  return const CircularProgressIndicator();
+                }
+
+                return ElevatedButton(
+                  onPressed: () async {
+                    if (_otpController.text.isEmpty) {
+                      return;
+                    }
+
+                    _authenticationBloc.add(VerifyOtpEvent(
+                      otp: _otpController.text,
+                      verificationId: widget.verificationId,
+                      confirmationResult: widget.confirmationResult,
+                    ));
+                  },
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: isWeb ? webAppBarColor : appBarColor,
+                  ),
+                  child: const Text('Verify'),
+                );
+              },
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}

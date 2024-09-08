@@ -41,6 +41,7 @@ dependencies:
   intl_phone_number_input: ^0.7.4
   gap: ^3.0.1
   logger: ^2.4.0
+  dartz: ^0.10.1
 
 dev_dependencies:
   flutter_test:

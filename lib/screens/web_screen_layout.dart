@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:whatsapp_clone/colors.dart';
-import 'package:whatsapp_clone/components/widgets/contacts_list.dart';
-import 'package:whatsapp_clone/components/widgets/web_profile_bar.dart';
 
-import '../components/widgets/chat_list.dart';
-import '../components/widgets/web_chat_appbar.dart';
-import '../components/widgets/web_search_bar.dart';
+import '../widgets/chat_list.dart';
+import '../widgets/contacts_list.dart';
+import '../widgets/web_chat_appbar.dart';
+import '../widgets/web_profile_bar.dart';
+import '../widgets/web_search_bar.dart';
 
 class WebScreenLayout extends StatelessWidget {
   const WebScreenLayout({super.key});
