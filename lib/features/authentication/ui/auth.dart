@@ -5,6 +5,7 @@ import 'package:intl_phone_number_input/intl_phone_number_input.dart';
 import 'package:whatsapp_clone/colors.dart';
 
 import '../bloc/authentication_bloc.dart';
+import '../cubit/auth_cubit.dart';
 import 'otp.dart';
 
 class AuthScreen extends StatefulWidget {
@@ -45,15 +46,15 @@ class _AuthScreenState extends State<AuthScreen> {
               ),
             ),
             const Gap(20),
-            BlocConsumer<AuthenticationBloc, AuthenticationState>(
-              bloc: _authenticationBloc,
+            BlocConsumer<AuthCubit, AuthState>(
               listener: (context, state) {
-                if (state is VerifyPhoneNumberCodeSentState) {
+                if (state is AuthCodeSentState) {
                   if (state.verificationId != null) {
                     Navigator.of(context).push(
                       MaterialPageRoute(
                         builder: (context) {
-                          return OtpScreen(verificationId: state.verificationId);
+                          return OtpScreen(
+                              verificationId: state.verificationId);
                         },
                       ),
                     );
@@ -68,29 +69,73 @@ class _AuthScreenState extends State<AuthScreen> {
                       ),
                     );
                   }
-                } else if (state is VerifyPhoneNumberErrorState) {
-                  ScaffoldMessenger.of(context).clearSnackBars();
-                  ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(content: Text(state.errorMessage)));
                 }
               },
               builder: (context, state) {
-                if (state is VerifyPhoneNumberLoadingState) {
-                  return const CircularProgressIndicator();
+                if (state is AuthLoadingState) {
+                  return const Center(
+                    child: CircularProgressIndicator(),
+                  );
                 }
 
                 return ElevatedButton(
-                  onPressed: () async {
-                    _authenticationBloc
-                        .add(VerifyPhoneNumberEvent(_phoneNumber.toString()));
-                  },
                   style: ElevatedButton.styleFrom(
                     backgroundColor: isWeb ? webAppBarColor : appBarColor,
                   ),
+                  onPressed: () {
+                    BlocProvider.of<AuthCubit>(context)
+                        .sendOTP(_phoneNumber.toString());
+                  },
                   child: const Text('Next'),
                 );
               },
             ),
+            // BlocConsumer<AuthenticationBloc, AuthenticationState>(
+            //   bloc: _authenticationBloc,
+            //   listener: (context, state) {
+            //     if (state is VerifyPhoneNumberCodeSentState) {
+            //       if (state.verificationId != null) {
+            //         Navigator.of(context).push(
+            //           MaterialPageRoute(
+            //             builder: (context) {
+            //               return OtpScreen(verificationId: state.verificationId);
+            //             },
+            //           ),
+            //         );
+            //       } else {
+            //         Navigator.of(context).push(
+            //           MaterialPageRoute(
+            //             builder: (context) {
+            //               return OtpScreen(
+            //                 confirmationResult: state.confirmationResult,
+            //               );
+            //             },
+            //           ),
+            //         );
+            //       }
+            //     } else if (state is VerifyPhoneNumberErrorState) {
+            //       ScaffoldMessenger.of(context).clearSnackBars();
+            //       ScaffoldMessenger.of(context).showSnackBar(
+            //           SnackBar(content: Text(state.errorMessage)));
+            //     }
+            //   },
+            //   builder: (context, state) {
+            //     if (state is VerifyPhoneNumberLoadingState) {
+            //       return const CircularProgressIndicator();
+            //     }
+            //
+            //     return ElevatedButton(
+            //       onPressed: () async {
+            //         _authenticationBloc
+            //             .add(VerifyPhoneNumberEvent(_phoneNumber.toString()));
+            //       },
+            //       style: ElevatedButton.styleFrom(
+            //         backgroundColor: isWeb ? webAppBarColor : appBarColor,
+            //       ),
+            //       child: const Text('Next'),
+            //     );
+            //   },
+            // ),
           ],
         ),
       ),

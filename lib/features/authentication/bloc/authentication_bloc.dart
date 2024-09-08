@@ -6,7 +6,6 @@ import 'package:flutter/foundation.dart';
 import 'package:whatsapp_clone/features/authentication/repos/auth_service.dart';
 
 part 'authentication_event.dart';
-
 part 'authentication_state.dart';
 
 class AuthenticationBloc
@@ -35,26 +34,26 @@ class AuthenticationBloc
         },
       );
     } else {
-      final result = await AuthService().verifyPhoneNumber(
-        event.phoneNumber,
-        (verificationId, forceResendingToken) {
-          emit(VerifyPhoneNumberCodeSentState(
-            verificationId: verificationId,
-          ));
-        },
-        (e) {
-          emit(VerifyPhoneNumberErrorState(e.message ?? 'Unknown error'));
-        },
-        (verificationId) {
-          emit(VerifyPhoneNumberErrorState('Auto retrieval timeout'));
-        },
-      );
+      // final result = await AuthService().verifyPhoneNumber(
+      //   event.phoneNumber,
+      //   (verificationId, forceResendingToken) async {
+      //     emit(VerifyPhoneNumberCodeSentState(
+      //       verificationId: verificationId,
+      //     ));
+      //   },
+      //   (e) {
+      //     emit(VerifyPhoneNumberErrorState(e.message ?? 'Unknown error'));
+      //   },
+      //   (verificationId) {
+      //     emit(VerifyPhoneNumberErrorState('Auto retrieval timeout'));
+      //   },
+      // );
 
-      if (result.isLeft()) {
-        emit(VerifyPhoneNumberErrorState(result
-            .leftMap((l) => l.message)
-            .fold((l) => l, (r) => 'Unknown error')));
-      }
+      // if (result.isLeft()) {
+      //   emit(VerifyPhoneNumberErrorState(result
+      //       .leftMap((l) => l.message)
+      //       .fold((l) => l, (r) => 'Unknown error')));
+      // }
     }
   }
 

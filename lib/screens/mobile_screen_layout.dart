@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:whatsapp_clone/colors.dart';
 
+import '../features/authentication/cubit/auth_cubit.dart';
 import '../widgets/contacts_list.dart';
 
 class MobileScreenLayout extends StatelessWidget {
@@ -29,7 +31,10 @@ class MobileScreenLayout extends StatelessWidget {
               icon: const Icon(Icons.search, color: Colors.grey),
             ),
             IconButton(
-              onPressed: () {},
+              onPressed: () {
+                // todo change
+                BlocProvider.of<AuthCubit>(context).signOut();
+              },
               icon: const Icon(Icons.more_vert, color: Colors.grey),
             ),
           ],

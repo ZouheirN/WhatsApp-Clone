@@ -2,6 +2,8 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:gap/gap.dart';
+import 'package:whatsapp_clone/features/authentication/cubit/auth_cubit.dart';
+import 'package:whatsapp_clone/main.dart';
 
 import '../../../colors.dart';
 import '../bloc/authentication_bloc.dart';
@@ -45,20 +47,22 @@ class _OtpScreenState extends State<OtpScreen> {
               ),
             ),
             const Gap(20),
-            BlocConsumer<AuthenticationBloc, AuthenticationState>(
-              bloc: _authenticationBloc,
+            BlocConsumer<AuthCubit, AuthState>(
               listener: (context, state) {
-                if (state is VerifyOtpSuccessState) {
+                logger.d(state);
+                if (state is AuthLoggedInState) {
                   Navigator.pop(context);
-                } else if (state is VerifyOtpErrorState) {
+                } else if (state is AuthErrorState) {
                   ScaffoldMessenger.of(context).clearSnackBars();
-                  ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(content: Text(state.errorMessage)));
+                  ScaffoldMessenger.of(context)
+                      .showSnackBar(SnackBar(content: Text(state.error)));
                 }
               },
               builder: (context, state) {
-                if (state is VerifyOtpLoadingState) {
-                  return const CircularProgressIndicator();
+                if (state is AuthLoadingState) {
+                  return const Center(
+                    child: CircularProgressIndicator(),
+                  );
                 }
 
                 return ElevatedButton(
@@ -67,11 +71,11 @@ class _OtpScreenState extends State<OtpScreen> {
                       return;
                     }
 
-                    _authenticationBloc.add(VerifyOtpEvent(
-                      otp: _otpController.text,
+                    BlocProvider.of<AuthCubit>(context).verifyOTP(
+                      _otpController.text,
                       verificationId: widget.verificationId,
                       confirmationResult: widget.confirmationResult,
-                    ));
+                    );
                   },
                   style: ElevatedButton.styleFrom(
                     backgroundColor: isWeb ? webAppBarColor : appBarColor,
@@ -80,6 +84,41 @@ class _OtpScreenState extends State<OtpScreen> {
                 );
               },
             ),
+            // BlocConsumer<AuthenticationBloc, AuthenticationState>(
+            //   bloc: _authenticationBloc,
+            //   listener: (context, state) {
+            //     if (state is VerifyOtpSuccessState) {
+            //       Navigator.pop(context);
+            //     } else if (state is VerifyOtpErrorState) {
+            //       ScaffoldMessenger.of(context).clearSnackBars();
+            //       ScaffoldMessenger.of(context).showSnackBar(
+            //           SnackBar(content: Text(state.errorMessage)));
+            //     }
+            //   },
+            //   builder: (context, state) {
+            //     if (state is VerifyOtpLoadingState) {
+            //       return const CircularProgressIndicator();
+            //     }
+            //
+            //     return ElevatedButton(
+            //       onPressed: () async {
+            //         if (_otpController.text.isEmpty) {
+            //           return;
+            //         }
+            //
+            //         _authenticationBloc.add(VerifyOtpEvent(
+            //           otp: _otpController.text,
+            //           verificationId: widget.verificationId,
+            //           confirmationResult: widget.confirmationResult,
+            //         ));
+            //       },
+            //       style: ElevatedButton.styleFrom(
+            //         backgroundColor: isWeb ? webAppBarColor : appBarColor,
+            //       ),
+            //       child: const Text('Verify'),
+            //     );
+            //   },
+            // ),
           ],
         ),
       ),
