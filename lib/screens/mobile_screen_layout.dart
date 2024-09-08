@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:whatsapp_clone/colors.dart';
-import 'package:whatsapp_clone/screens/settings_screen.dart';
+import 'package:whatsapp_clone/screens/mobile_settings_screen.dart';
 
 import '../widgets/contacts_list.dart';
 
@@ -32,7 +32,7 @@ class MobileScreenLayout extends StatelessWidget {
             IconButton(
               onPressed: () {
                 Navigator.of(context).push(MaterialPageRoute(
-                    builder: (context) => SettingsScreen()));
+                    builder: (context) => MobileSettingsScreen()));
               },
               icon: const Icon(Icons.more_vert, color: Colors.grey),
             ),

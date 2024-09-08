@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:whatsapp_clone/colors.dart';
 
-import '../screens/settings_screen.dart';
-
 class WebProfileBar extends StatelessWidget {
-  const WebProfileBar({super.key});
+  final void Function()? openSettings;
+
+  const WebProfileBar({super.key, required this.openSettings});
 
   @override
   Widget build(BuildContext context) {
@@ -31,14 +31,7 @@ class WebProfileBar extends StatelessWidget {
               onPressed: () {},
               icon: const Icon(Icons.comment, color: Colors.grey)),
           IconButton(
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => SettingsScreen(),
-                  ),
-                );
-              },
+              onPressed: openSettings,
               icon: const Icon(Icons.more_vert, color: Colors.grey)),
         ],
       ),

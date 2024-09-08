@@ -1,13 +1,12 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:gap/gap.dart';
 
 import '../colors.dart';
 import '../features/authentication/cubit/auth_cubit.dart';
 
-class SettingsScreen extends StatelessWidget {
-  SettingsScreen({super.key});
+class MobileSettingsScreen extends StatelessWidget {
+  MobileSettingsScreen({super.key});
 
   final FirebaseAuth _auth = FirebaseAuth.instance;
 

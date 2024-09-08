@@ -1,6 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:whatsapp_clone/colors.dart';
+import 'package:whatsapp_clone/screens/web_settings_screen.dart';
 import 'package:whatsapp_clone/utils/utilities_box.dart';
 
 import '../services/chat/chat_service.dart';
@@ -23,11 +24,14 @@ class _WebScreenLayoutState extends State<WebScreenLayout> {
   final ChatService _chatService = ChatService();
   final FirebaseAuth _auth = FirebaseAuth.instance;
 
+  final FocusNode _focusNode = FocusNode();
   final ScrollController _scrollController = ScrollController();
+
+  ValueNotifier<bool> settingsOpen = ValueNotifier(false);
 
   void sendMessage(String receiverId) async {
     if (_messageController.text.isNotEmpty) {
-      await _chatService.sendMessage(
+      _chatService.sendMessage(
         receiverId,
         _messageController.text.trim(),
       );
@@ -54,6 +58,7 @@ class _WebScreenLayoutState extends State<WebScreenLayout> {
   @override
   void dispose() {
     _messageController.dispose();
+    settingsOpen.dispose();
     super.dispose();
   }
 
@@ -65,12 +70,28 @@ class _WebScreenLayoutState extends State<WebScreenLayout> {
         children: [
           Expanded(
             child: SingleChildScrollView(
-              child: Column(
-                children: [
-                  const WebProfileBar(),
-                  const WebSearchBar(),
-                  ContactsList(),
-                ],
+              child: ValueListenableBuilder<bool>(
+                valueListenable: settingsOpen,
+                builder: (context, value, child) {
+                  return Column(
+                    children: [
+                      WebProfileBar(
+                        openSettings: () {
+                          settingsOpen.value = !settingsOpen.value;
+                        },
+                      ),
+                      if (value)
+                        WebSettingsScreen()
+                      else
+                        Column(
+                          children: [
+                            const WebSearchBar(),
+                            ContactsList(),
+                          ],
+                        ),
+                    ],
+                  );
+                },
               ),
             ),
           ),
@@ -134,6 +155,15 @@ class _WebScreenLayoutState extends State<WebScreenLayout> {
                                     const EdgeInsets.only(left: 10, right: 15),
                                 child: TextField(
                                   controller: _messageController,
+                                  focusNode: _focusNode,
+                                  textInputAction: TextInputAction.send,
+                                  onSubmitted: (value) {
+                                    sendMessage(
+                                      box.get('selectedUser')['uid'],
+                                    );
+
+                                    _focusNode.requestFocus();
+                                  },
                                   decoration: InputDecoration(
                                     fillColor: searchBarColor,
                                     filled: true,
