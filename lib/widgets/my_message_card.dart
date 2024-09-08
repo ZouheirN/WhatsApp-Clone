@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:gap/gap.dart';
 import 'package:whatsapp_clone/colors.dart';
 
 class MyMessageCard extends StatelessWidget {
@@ -14,6 +15,7 @@ class MyMessageCard extends StatelessWidget {
       child: ConstrainedBox(
         constraints: BoxConstraints(
           maxWidth: MediaQuery.of(context).size.width - 45,
+          minWidth: 120,
         ),
         child: Card(
           elevation: 1,
@@ -33,6 +35,7 @@ class MyMessageCard extends StatelessWidget {
                     fontSize: 16,
                     color: Colors.white,
                   ),
+                  textAlign: TextAlign.end,
                 ),
               ),
               Positioned(
@@ -41,13 +44,13 @@ class MyMessageCard extends StatelessWidget {
                 child: Row(
                   children: [
                     Text(
-                      time,
+                      time.toString(),
                       style: const TextStyle(
                         fontSize: 13,
                         color: Colors.white60,
                       ),
                     ),
-                    const SizedBox(width: 5),
+                    const Gap(5),
                     const Icon(
                       Icons.done_all,
                       size: 20,

@@ -20,8 +20,8 @@ class WebScreenLayout extends StatelessWidget {
             child: SingleChildScrollView(
               child: Column(
                 children: [
-                  WebProfileBar(),
-                  WebSearchBar(),
+                  const WebProfileBar(),
+                  const WebSearchBar(),
                   ContactsList(),
                 ],
               ),
@@ -38,7 +38,7 @@ class WebScreenLayout extends StatelessWidget {
             child: Column(
               children: [
                 const WebChatAppbar(),
-                const Expanded(child: ChatList()),
+                // const Expanded(child: ChatList()),
                 Container(
                   height: MediaQuery.of(context).size.height * 0.08,
                   padding: const EdgeInsets.all(10),

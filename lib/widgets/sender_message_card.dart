@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:whatsapp_clone/colors.dart';
 
@@ -33,6 +34,7 @@ class SenderMessageCard extends StatelessWidget {
                     fontSize: 16,
                     color: Colors.white,
                   ),
+                  textAlign: TextAlign.start,
                 ),
               ),
               Positioned(
@@ -41,7 +43,7 @@ class SenderMessageCard extends StatelessWidget {
                 child: Row(
                   children: [
                     Text(
-                      time,
+                      time.toString(),
                       style: const TextStyle(
                         fontSize: 13,
                         color: Colors.white60,

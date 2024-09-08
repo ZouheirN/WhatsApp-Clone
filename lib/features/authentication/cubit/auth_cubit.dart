@@ -90,7 +90,7 @@ class AuthCubit extends Cubit<AuthState> {
         .set({
       'uid': userCredential.user!.uid,
       'phone': userCredential.user!.phoneNumber,
-      'profilePic': 'https://ui-avatars.com/api/?name=',
+      'profilePic': 'https://ui-avatars.com/api/?name=John+Doe',
     });
   }
 

@@ -54,6 +54,8 @@ class ContactsList extends StatelessWidget {
                         builder: (context) {
                           return MobileChatScreen(
                             receiverPhoneNumber: userData['phone'],
+                            receiverId: userData['uid'],
+                            receiverProfilePic: userData['profilePic'],
                           );
                         },
                       ),
