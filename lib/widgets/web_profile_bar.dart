@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:whatsapp_clone/colors.dart';
 
+import '../screens/settings_screen.dart';
+
 class WebProfileBar extends StatelessWidget {
   const WebProfileBar({super.key});
 
@@ -22,15 +24,21 @@ class WebProfileBar extends StatelessWidget {
         children: [
           const CircleAvatar(
             radius: 20,
-            backgroundImage: NetworkImage(
-                'https://media.cntraveler.com/photos/60596b398f4452dac88c59f8/16:9/w_3999,h_2249,c_limit/MtFuji-GettyImages-959111140.jpg'),
+            // backgroundImage: NetworkImage(_auth.currentUser.photoURL),
           ),
           const Spacer(),
           IconButton(
               onPressed: () {},
               icon: const Icon(Icons.comment, color: Colors.grey)),
           IconButton(
-              onPressed: () {},
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => SettingsScreen(),
+                  ),
+                );
+              },
               icon: const Icon(Icons.more_vert, color: Colors.grey)),
         ],
       ),

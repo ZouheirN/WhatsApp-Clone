@@ -1,8 +1,10 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:whatsapp_clone/colors.dart';
+import 'package:whatsapp_clone/main.dart';
 import 'package:whatsapp_clone/screens/mobile_chat_screen.dart';
 import 'package:whatsapp_clone/services/chat/chat_service.dart';
+import 'package:whatsapp_clone/utils/utilities_box.dart';
 
 class ContactsList extends StatelessWidget {
   ContactsList({super.key});
@@ -47,7 +49,15 @@ class ContactsList extends StatelessWidget {
         children: [
           InkWell(
             onTap: MediaQuery.of(context).size.width > 600
-                ? null
+                ? () {
+                    final selectedUser = UtilitiesBox.getSelectedUser();
+
+                    if (selectedUser == null ||
+                        selectedUser['uid'] != userData['uid']) {
+                      UtilitiesBox.setSelectedUser(userData['uid'],
+                          userData['phone'], userData['profilePic']);
+                    }
+                  }
                 : () {
                     Navigator.of(context).push(
                       MaterialPageRoute(

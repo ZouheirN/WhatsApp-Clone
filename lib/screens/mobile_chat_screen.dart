@@ -164,7 +164,6 @@ class _MobileChatScreenState extends State<MobileChatScreen> {
                       ),
                       contentPadding: const EdgeInsets.all(10),
                     ),
-                    onChanged: (value) {},
                   ),
                 ),
                 const Gap(5),

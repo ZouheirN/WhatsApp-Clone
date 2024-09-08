@@ -1,10 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:whatsapp_clone/colors.dart';
 
-import '../../info.dart';
-
 class WebChatAppbar extends StatelessWidget {
-  const WebChatAppbar({super.key});
+  final String selectedUserPhoneNumber;
+  final String selectedUserProfilePic;
+
+  const WebChatAppbar({
+    super.key,
+    required this.selectedUserPhoneNumber,
+    required this.selectedUserProfilePic,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -15,13 +20,12 @@ class WebChatAppbar extends StatelessWidget {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          const CircleAvatar(
-            backgroundImage: NetworkImage(
-                'https://media.cntraveler.com/photos/60596b398f4452dac88c59f8/16:9/w_3999,h_2249,c_limit/MtFuji-GettyImages-959111140.jpg'),
+          CircleAvatar(
+            backgroundImage: NetworkImage(selectedUserProfilePic),
             radius: 30,
           ),
           Text(
-            info[0]['name'].toString(),
+            selectedUserPhoneNumber,
             style: const TextStyle(
               fontSize: 20,
               color: Colors.white,
