@@ -44,13 +44,23 @@ class AuthCubit extends Cubit<AuthState> {
     emit(AuthLoadingState());
 
     if (confirmationResult != null) {
-      // todo add to try and catch
-      final cred = await confirmationResult.confirm(otp);
-      emit(AuthLoggedInState(cred.user!));
+      signInWithPhoneWeb(otp, confirmationResult);
     } else {
       PhoneAuthCredential credential = PhoneAuthProvider.credential(
           verificationId: verificationID!, smsCode: otp);
       signInWithPhone(credential);
+    }
+  }
+
+  Future<void> signInWithPhoneWeb(String otp, ConfirmationResult confirmationResult) async {
+    try {
+      final cred = await confirmationResult.confirm(otp);
+
+      if (cred.user != null) {
+        emit(AuthLoggedInState(cred.user!));
+      }
+    } on FirebaseAuthException catch (e) {
+      emit(AuthErrorState(e.message.toString()));
     }
   }
 

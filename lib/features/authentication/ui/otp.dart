@@ -3,10 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:gap/gap.dart';
 import 'package:whatsapp_clone/features/authentication/cubit/auth_cubit.dart';
-import 'package:whatsapp_clone/main.dart';
 
 import '../../../colors.dart';
-import '../bloc/authentication_bloc.dart';
 
 class OtpScreen extends StatefulWidget {
   final String? verificationId;
@@ -21,7 +19,6 @@ class OtpScreen extends StatefulWidget {
 class _OtpScreenState extends State<OtpScreen> {
   final _otpController = TextEditingController();
 
-  final _authenticationBloc = AuthenticationBloc();
 
   @override
   Widget build(BuildContext context) {
@@ -49,7 +46,6 @@ class _OtpScreenState extends State<OtpScreen> {
             const Gap(20),
             BlocConsumer<AuthCubit, AuthState>(
               listener: (context, state) {
-                logger.d(state);
                 if (state is AuthLoggedInState) {
                   Navigator.pop(context);
                 } else if (state is AuthErrorState) {
@@ -84,41 +80,6 @@ class _OtpScreenState extends State<OtpScreen> {
                 );
               },
             ),
-            // BlocConsumer<AuthenticationBloc, AuthenticationState>(
-            //   bloc: _authenticationBloc,
-            //   listener: (context, state) {
-            //     if (state is VerifyOtpSuccessState) {
-            //       Navigator.pop(context);
-            //     } else if (state is VerifyOtpErrorState) {
-            //       ScaffoldMessenger.of(context).clearSnackBars();
-            //       ScaffoldMessenger.of(context).showSnackBar(
-            //           SnackBar(content: Text(state.errorMessage)));
-            //     }
-            //   },
-            //   builder: (context, state) {
-            //     if (state is VerifyOtpLoadingState) {
-            //       return const CircularProgressIndicator();
-            //     }
-            //
-            //     return ElevatedButton(
-            //       onPressed: () async {
-            //         if (_otpController.text.isEmpty) {
-            //           return;
-            //         }
-            //
-            //         _authenticationBloc.add(VerifyOtpEvent(
-            //           otp: _otpController.text,
-            //           verificationId: widget.verificationId,
-            //           confirmationResult: widget.confirmationResult,
-            //         ));
-            //       },
-            //       style: ElevatedButton.styleFrom(
-            //         backgroundColor: isWeb ? webAppBarColor : appBarColor,
-            //       ),
-            //       child: const Text('Verify'),
-            //     );
-            //   },
-            // ),
           ],
         ),
       ),
