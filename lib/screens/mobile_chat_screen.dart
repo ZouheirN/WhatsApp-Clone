@@ -5,7 +5,9 @@ import 'package:whatsapp_clone/info.dart';
 import '../widgets/chat_list.dart';
 
 class MobileChatScreen extends StatelessWidget {
-  const MobileChatScreen({super.key});
+  final String receiverPhoneNumber;
+
+  const MobileChatScreen({super.key, required this.receiverPhoneNumber});
 
   @override
   Widget build(BuildContext context) {

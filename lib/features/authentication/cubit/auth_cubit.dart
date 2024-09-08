@@ -1,11 +1,13 @@
 import 'package:bloc/bloc.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
 
 part 'auth_state.dart';
 
 class AuthCubit extends Cubit<AuthState> {
-  final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
+  final FirebaseAuth _auth = FirebaseAuth.instance;
+  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
   AuthCubit() : super(AuthInitialState());
 
@@ -20,7 +22,7 @@ class AuthCubit extends Cubit<AuthState> {
 
       emit(AuthCodeSentState(confirmationResult: confirmationResult));
     } else {
-      _firebaseAuth.verifyPhoneNumber(
+      _auth.verifyPhoneNumber(
         phoneNumber: phoneNumber,
         codeSent: (verificationId, forceResendingToken) {
           verificationID = verificationId;
@@ -52,12 +54,14 @@ class AuthCubit extends Cubit<AuthState> {
     }
   }
 
-  Future<void> signInWithPhoneWeb(String otp, ConfirmationResult confirmationResult) async {
+  Future<void> signInWithPhoneWeb(
+      String otp, ConfirmationResult confirmationResult) async {
     try {
-      final cred = await confirmationResult.confirm(otp);
+      final userCredential = await confirmationResult.confirm(otp);
 
-      if (cred.user != null) {
-        emit(AuthLoggedInState(cred.user!));
+      if (userCredential.user != null) {
+        await saveUserInfo(userCredential);
+        emit(AuthLoggedInState(userCredential.user!));
       }
     } on FirebaseAuthException catch (e) {
       emit(AuthErrorState(e.message.toString()));
@@ -66,10 +70,10 @@ class AuthCubit extends Cubit<AuthState> {
 
   void signInWithPhone(AuthCredential credential) async {
     try {
-      UserCredential userCredential =
-          await _firebaseAuth.signInWithCredential(credential);
+      final userCredential = await _auth.signInWithCredential(credential);
 
       if (userCredential.user != null) {
+        await saveUserInfo(userCredential);
         emit(AuthLoggedInState(userCredential.user!));
       }
     } on FirebaseAuthException catch (ex) {
@@ -77,8 +81,21 @@ class AuthCubit extends Cubit<AuthState> {
     }
   }
 
+  Future<void> saveUserInfo(UserCredential userCredential) async {
+    await _firestore
+        .collection('users')
+        .doc(
+          userCredential.user!.uid,
+        )
+        .set({
+      'uid': userCredential.user!.uid,
+      'phone': userCredential.user!.phoneNumber,
+      'profilePic': 'https://ui-avatars.com/api/?name=',
+    });
+  }
+
   void signOut() async {
     emit(AuthLoggedOutState());
-    _firebaseAuth.signOut();
+    _auth.signOut();
   }
 }

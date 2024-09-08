@@ -16,7 +16,7 @@ class WebScreenLayout extends StatelessWidget {
       body: Row(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          const Expanded(
+           Expanded(
             child: SingleChildScrollView(
               child: Column(
                 children: [
