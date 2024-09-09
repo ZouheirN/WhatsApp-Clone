@@ -89,8 +89,40 @@ class ContactsList extends StatelessWidget {
       stream: _chatService.getLatestMessage(
           _auth.currentUser!.uid, userData['uid']),
       builder: (context, snapshot) {
+        if (snapshot.data == null || snapshot.data!.docs.isEmpty) {
+          return ListTile(
+            leading: CircleAvatar(
+              radius: 30,
+              backgroundImage: NetworkImage(userData['profilePic'].toString()),
+            ),
+            title: Text(
+              userData['phone'].toString(),
+              style: const TextStyle(
+                fontSize: 18,
+              ),
+            ),
+            subtitle: const Padding(
+              padding: EdgeInsets.only(top: 6.0),
+              child: Text(
+                '',
+                style: TextStyle(
+                  fontSize: 15,
+                ),
+              ),
+            ),
+            trailing: const Text(
+              '',
+              style: TextStyle(
+                fontSize: 13,
+                color: Colors.grey,
+              ),
+            ),
+          );
+        }
+
         final latestMessage =
             snapshot.data?.docs.last.data() as Map<String, dynamic>?;
+
         final message = latestMessage?['message'] ?? '';
         final time = latestMessage?['timestamp'] ?? '';
         String parsedTime = '';
@@ -112,7 +144,7 @@ class ContactsList extends StatelessWidget {
           subtitle: Padding(
             padding: const EdgeInsets.only(top: 6.0),
             child: Text(
-              message,
+              message ?? '',
               style: const TextStyle(
                 fontSize: 15,
               ),

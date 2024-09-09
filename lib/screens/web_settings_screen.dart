@@ -1,7 +1,9 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../colors.dart';
+import '../features/authentication/cubit/auth_cubit.dart';
 
 class WebSettingsScreen extends StatelessWidget {
   WebSettingsScreen({super.key});
@@ -104,7 +106,9 @@ class WebSettingsScreen extends StatelessWidget {
               color: Colors.red,
             ),
           ),
-          onTap: () {},
+          onTap: () {
+            BlocProvider.of<AuthCubit>(context).signOut();
+          },
           minLeadingWidth: 30,
         ),
         const Divider(

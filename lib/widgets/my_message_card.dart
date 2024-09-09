@@ -5,8 +5,13 @@ import 'package:whatsapp_clone/colors.dart';
 class MyMessageCard extends StatelessWidget {
   final String message;
   final String time;
+  final bool isRead;
 
-  const MyMessageCard({super.key, required this.message, required this.time});
+  const MyMessageCard(
+      {super.key,
+      required this.message,
+      required this.time,
+      required this.isRead});
 
   @override
   Widget build(BuildContext context) {
@@ -51,11 +56,18 @@ class MyMessageCard extends StatelessWidget {
                       ),
                     ),
                     const Gap(5),
-                    const Icon(
-                      Icons.done_all,
-                      size: 20,
-                      color: Colors.white60,
-                    ),
+                    if (isRead)
+                      const Icon(
+                        Icons.done_all,
+                        size: 20,
+                        color: Colors.white60,
+                      )
+                    else
+                      const Icon(
+                        Icons.done,
+                        size: 20,
+                        color: Colors.white60,
+                      ),
                   ],
                 ),
               )

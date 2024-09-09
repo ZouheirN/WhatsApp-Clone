@@ -77,6 +77,7 @@ class _ChatListState extends State<ChatList> {
                 return MyMessageCard(
                   message: data['message'],
                   time: parsedTime,
+                  isRead: data['isRead'],
                 );
               } else {
                 return SenderMessageCard(
