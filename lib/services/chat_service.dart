@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:whatsapp_clone/models/file_message.dart';
 import 'package:whatsapp_clone/models/message.dart';
 
 class ChatService {
@@ -42,6 +43,33 @@ class ChatService {
         .doc(chatId)
         .collection('messages')
         .add(newMessage.toMap());
+  }
+
+  Future<void> sendFiles(String receiverId, List<String> filesUrl, List<String> fileNames) async {
+    final String currentUserId = _auth.currentUser!.uid;
+    final String currentUserPhoneNumber = _auth.currentUser!.phoneNumber!;
+    final Timestamp timestamp = Timestamp.now();
+
+    for (String fileUrl in filesUrl) {
+      FileMessage newFileMessage = FileMessage(
+        senderId: currentUserId,
+        senderPhoneNumber: currentUserPhoneNumber,
+        receiverId: receiverId,
+        fileUrl: fileUrl,
+        fileName: fileNames[filesUrl.indexOf(fileUrl)],
+        timestamp: timestamp,
+      );
+
+      List<String> ids = [currentUserId, receiverId];
+      ids.sort();
+      String chatId = ids.join('_');
+
+      await _firestore
+          .collection('chats')
+          .doc(chatId)
+          .collection('messages')
+          .add(newFileMessage.toMap());
+    }
   }
 
   Stream<QuerySnapshot> getMessages(String userId, String otherUserId) {

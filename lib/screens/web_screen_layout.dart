@@ -1,10 +1,16 @@
+import 'dart:io';
+
+import 'package:file_picker/file_picker.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:gap/gap.dart';
 import 'package:whatsapp_clone/colors.dart';
 import 'package:whatsapp_clone/screens/web_settings_screen.dart';
 import 'package:whatsapp_clone/utils/utilities_box.dart';
 
-import '../services/chat/chat_service.dart';
+import '../services/chat_service.dart';
+import '../services/storage_service.dart';
 import '../widgets/chat_list.dart';
 import '../widgets/contacts_list.dart';
 import '../widgets/web_chat_appbar.dart';
@@ -28,6 +34,7 @@ class _WebScreenLayoutState extends State<WebScreenLayout> {
   final ScrollController _scrollController = ScrollController();
 
   ValueNotifier<bool> settingsOpen = ValueNotifier(false);
+  ValueNotifier<bool> isUploading = ValueNotifier(false);
 
   void sendMessage(String receiverId) async {
     if (_messageController.text.isNotEmpty) {
@@ -48,6 +55,41 @@ class _WebScreenLayoutState extends State<WebScreenLayout> {
       duration: const Duration(milliseconds: 300),
       curve: Curves.easeOut,
     );
+  }
+
+  void _pickFile(bool isDocument) async {
+    FilePickerResult? result = await FilePicker.platform.pickFiles(
+      allowMultiple: true,
+      type: isDocument ? FileType.any : FileType.media,
+    );
+
+    if (result == null) return;
+
+    // Uint8List fileBytes = result.files.first.bytes;
+    // String fileName = result.files.first.name;
+
+    List<Uint8List> files = result.files.map((file) => file.bytes!).toList();
+    List<String> fileNames = result.files.map((file) => file.name).toList();
+
+    final receiverId = UtilitiesBox.getSelectedUser()?['uid'];
+
+    isUploading.value = true;
+
+    // Upload the files to firestore and get link
+    List<String> fileUrls = await StorageService().uploadFilesWeb(
+      receiverId,
+      files,
+      fileNames,
+    );
+
+    // Send the FileMessage
+    _chatService.sendFiles(
+      receiverId,
+      fileUrls,
+      fileNames,
+    );
+
+    isUploading.value = false;
   }
 
   @override
@@ -133,81 +175,147 @@ class _WebScreenLayoutState extends State<WebScreenLayout> {
                             ),
                           ),
                         ),
-                        child: Row(
-                          children: [
-                            IconButton(
-                              onPressed: () {},
-                              icon: const Icon(
-                                Icons.emoji_emotions_outlined,
-                                color: Colors.grey,
-                              ),
-                            ),
-                            IconButton(
-                              onPressed: () {},
-                              icon: const Icon(
-                                Icons.add,
-                                color: Colors.grey,
-                              ),
-                            ),
-                            Expanded(
-                              child: Padding(
-                                padding:
-                                    const EdgeInsets.only(left: 10, right: 15),
-                                child: TextField(
-                                  controller: _messageController,
-                                  focusNode: _focusNode,
-                                  textInputAction: TextInputAction.send,
-                                  onSubmitted: (value) {
-                                    sendMessage(
-                                      box.get('selectedUser')['uid'],
-                                    );
+                        child: ValueListenableBuilder(
+                          valueListenable: isUploading,
+                          builder: (context, value, child) {
+                            if (value) {
+                              return const LinearProgressIndicator();
+                            }
 
-                                    _focusNode.requestFocus();
-                                  },
-                                  decoration: InputDecoration(
-                                    fillColor: searchBarColor,
-                                    filled: true,
-                                    hintText: 'Type a message',
-                                    border: OutlineInputBorder(
-                                      borderRadius: BorderRadius.circular(20),
-                                      borderSide: const BorderSide(
-                                        width: 0,
-                                        style: BorderStyle.none,
-                                      ),
-                                    ),
-                                    contentPadding:
-                                        const EdgeInsets.only(left: 20),
+                            return Row(
+                              children: [
+                                IconButton(
+                                  onPressed: () {},
+                                  icon: const Icon(
+                                    Icons.emoji_emotions_outlined,
+                                    color: Colors.grey,
                                   ),
                                 ),
-                              ),
-                            ),
-                            ValueListenableBuilder(
-                              valueListenable: _messageController,
-                              builder: (context, value, child) {
-                                if (_messageController.text.isNotEmpty) {
-                                  return IconButton(
-                                    onPressed: () {
-                                      sendMessage(
-                                        box.get('selectedUser')['uid'],
+                                PopupMenuButton(
+                                  offset: const Offset(0, -160),
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(10),
+                                  ),
+                                  itemBuilder: (context) => [
+                                    const PopupMenuItem(
+                                      value: 1,
+                                      child: Row(
+                                        children: [
+                                          Icon(
+                                            Icons.description,
+                                            color: Colors.deepPurpleAccent,
+                                          ),
+                                          Gap(10),
+                                          Text('Document'),
+                                        ],
+                                      ),
+                                    ),
+                                    const PopupMenuItem(
+                                      value: 2,
+                                      child: Row(
+                                        children: [
+                                          Icon(
+                                            Icons.photo_library,
+                                            color: Colors.blueAccent,
+                                          ),
+                                          Gap(10),
+                                          Text('Photos & Videos'),
+                                        ],
+                                      ),
+                                    ),
+                                    const PopupMenuItem(
+                                      value: 3,
+                                      child: Row(
+                                        children: [
+                                          Icon(
+                                            Icons.camera_alt,
+                                            color: Colors.redAccent,
+                                          ),
+                                          Gap(10),
+                                          Text('Camera'),
+                                        ],
+                                      ),
+                                    ),
+                                  ],
+                                  onSelected: (value) {
+                                    switch (value) {
+                                      case 1:
+                                        _pickFile(true);
+                                        break;
+                                      case 2:
+                                        _pickFile(false);
+                                        break;
+                                      case 3:
+                                        break;
+                                    }
+                                  },
+                                  icon: const Icon(
+                                    Icons.add,
+                                    color: Colors.grey,
+                                  ),
+                                ),
+                                Expanded(
+                                  child: Padding(
+                                    padding: const EdgeInsets.only(
+                                        left: 10, right: 15),
+                                    child: TextField(
+                                      controller: _messageController,
+                                      focusNode: _focusNode,
+                                      textInputAction: TextInputAction.send,
+                                      onSubmitted: (value) {
+                                        sendMessage(
+                                          box.get('selectedUser')['uid'],
+                                        );
+
+                                        _focusNode.requestFocus();
+                                      },
+                                      decoration: InputDecoration(
+                                        fillColor: searchBarColor,
+                                        filled: true,
+                                        hintText: 'Type a message',
+                                        border: OutlineInputBorder(
+                                          borderRadius:
+                                              BorderRadius.circular(20),
+                                          borderSide: const BorderSide(
+                                            width: 0,
+                                            style: BorderStyle.none,
+                                          ),
+                                        ),
+                                        contentPadding:
+                                            const EdgeInsets.only(left: 20),
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                                ValueListenableBuilder(
+                                  valueListenable: _messageController,
+                                  builder: (context, value, child) {
+                                    if (_messageController.text.isNotEmpty) {
+                                      return IconButton(
+                                        onPressed: () {
+                                          sendMessage(
+                                            box.get('selectedUser')['uid'],
+                                          );
+                                        },
+                                        icon: const Icon(
+                                          Icons.send,
+                                          color: Colors.grey,
+                                        ),
                                       );
-                                    },
-                                    icon: const Icon(
-                                      Icons.send,
-                                      color: Colors.grey,
-                                    ),
-                                  );
-                                } else {
-                                  return IconButton(
-                                    onPressed: () {},
-                                    icon: const Icon(
-                                      Icons.mic,
-                                      color: Colors.grey,
-                                    ),
-                                  );
-                                }
-                              },
-                            ),
-                          ],
+                                    } else {
+                                      return IconButton(
+                                        onPressed: () {},
+                                        icon: const Icon(
+                                          Icons.mic,
+                                          color: Colors.grey,
+                                        ),
+                                      );
+                                    }
+                                  },
+                                ),
+                              ],
+                            );
+                          },
                         ),
                       ),
                     ],

@@ -2,7 +2,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 import 'package:whatsapp_clone/colors.dart';
-import 'package:whatsapp_clone/services/chat/chat_service.dart';
+import 'package:whatsapp_clone/services/chat_service.dart';
 
 import '../widgets/chat_list.dart';
 

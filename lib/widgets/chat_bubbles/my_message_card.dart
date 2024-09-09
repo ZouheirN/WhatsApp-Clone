@@ -7,11 +7,12 @@ class MyMessageCard extends StatelessWidget {
   final String time;
   final bool isRead;
 
-  const MyMessageCard(
-      {super.key,
-      required this.message,
-      required this.time,
-      required this.isRead});
+  const MyMessageCard({
+    super.key,
+    required this.message,
+    required this.time,
+    required this.isRead,
+  });
 
   @override
   Widget build(BuildContext context) {

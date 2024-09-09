@@ -1,7 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:whatsapp_clone/services/chat/chat_service.dart';
-import 'package:whatsapp_clone/widgets/sender_message_card.dart';
-import 'my_message_card.dart';
+import 'package:whatsapp_clone/features/file_message/ui/file_message_provider.dart';
+import 'package:whatsapp_clone/services/chat_service.dart';
+import 'package:whatsapp_clone/widgets/chat_bubbles/sender_file_message_card.dart';
+import 'package:whatsapp_clone/widgets/chat_bubbles/sender_message_card.dart';
+
+import 'chat_bubbles/my_file_message_card.dart';
+import 'chat_bubbles/my_message_card.dart';
 
 class ChatList extends StatefulWidget {
   final String senderId;
@@ -29,7 +33,8 @@ class _ChatListState extends State<ChatList> {
     // Optional: Scroll to the bottom on initial build
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (widget.scrollController.hasClients) {
-        widget.scrollController.jumpTo(widget.scrollController.position.maxScrollExtent);
+        widget.scrollController
+            .jumpTo(widget.scrollController.position.maxScrollExtent);
       }
     });
   }
@@ -65,21 +70,41 @@ class _ChatListState extends State<ChatList> {
         return ListView(
           controller: widget.scrollController,
           children: snapshot.data!.docs.map(
-                (doc) {
+            (doc) {
               Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
 
               final isCurrentUser = data['senderId'] == widget.senderId;
 
               // Convert timestamp to string as HH:MM
-              final String parsedTime = data['timestamp'].toDate().toString().substring(11, 16);
+              final String parsedTime =
+                  data['timestamp'].toDate().toString().substring(11, 16);
 
               if (isCurrentUser) {
+                if (data['fileUrl'] != null) {
+                  return FileMessageProvider(
+                    isCurrentUser: isCurrentUser,
+                    fileUrl: data['fileUrl'],
+                    fileName: data['fileName'],
+                    time: parsedTime,
+                    isRead: data['isRead'],
+                  );
+                }
+
                 return MyMessageCard(
                   message: data['message'],
                   time: parsedTime,
                   isRead: data['isRead'],
                 );
               } else {
+                if (data['fileUrl'] != null) {
+                  return FileMessageProvider(
+                    isCurrentUser: isCurrentUser,
+                    fileUrl: data['fileUrl'],
+                    fileName: data['fileName'],
+                    time: parsedTime,
+                  );
+                }
+
                 return SenderMessageCard(
                   message: data['message'],
                   time: parsedTime,
