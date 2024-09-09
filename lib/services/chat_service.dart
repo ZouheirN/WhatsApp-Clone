@@ -45,7 +45,8 @@ class ChatService {
         .add(newMessage.toMap());
   }
 
-  Future<void> sendFiles(String receiverId, List<String> filesUrl, List<String> fileNames) async {
+  Future<void> sendFiles(
+      String receiverId, List<String> filesUrl, List<String> fileNames) async {
     final String currentUserId = _auth.currentUser!.uid;
     final String currentUserPhoneNumber = _auth.currentUser!.phoneNumber!;
     final Timestamp timestamp = Timestamp.now();
@@ -77,19 +78,19 @@ class ChatService {
     ids.sort();
     String chatId = ids.join('_');
 
-    // set the messages as read
-    _firestore
-        .collection('chats')
-        .doc(chatId)
-        .collection('messages')
-        .where('senderId', isNotEqualTo: otherUserId)
-        .where('isRead', isEqualTo: false)
-        .get()
-        .then((snapshot) {
-      for (QueryDocumentSnapshot doc in snapshot.docs) {
-        doc.reference.update({'isRead': true});
-      }
-    });
+    // // set the messages as read
+    // _firestore
+    //     .collection('chats')
+    //     .doc(chatId)
+    //     .collection('messages')
+    //     .where('senderId', isNotEqualTo: otherUserId)
+    //     .where('isRead', isEqualTo: false)
+    //     .get()
+    //     .then((snapshot) {
+    //   for (QueryDocumentSnapshot doc in snapshot.docs) {
+    //     doc.reference.update({'isRead': true});
+    //   }
+    // });
 
     return _firestore
         .collection('chats')
@@ -111,5 +112,24 @@ class ChatService {
         .orderBy('timestamp', descending: true)
         .limit(1)
         .snapshots();
+  }
+
+  void markMessagesAsRead(String userId, String otherUserId) {
+    List<String> ids = [userId, otherUserId];
+    ids.sort();
+    String chatId = ids.join('_');
+
+    _firestore
+        .collection('chats')
+        .doc(chatId)
+        .collection('messages')
+        .where('senderId', isNotEqualTo: otherUserId)
+        .where('isRead', isEqualTo: false)
+        .get()
+        .then((snapshot) {
+      for (QueryDocumentSnapshot doc in snapshot.docs) {
+        doc.reference.update({'isRead': true});
+      }
+    });
   }
 }

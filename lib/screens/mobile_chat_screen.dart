@@ -1,9 +1,13 @@
+import 'dart:io';
+
+import 'package:file_picker/file_picker.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 import 'package:whatsapp_clone/colors.dart';
 import 'package:whatsapp_clone/services/chat_service.dart';
 
+import '../services/storage_service.dart';
 import '../widgets/chat_list.dart';
 
 class MobileChatScreen extends StatefulWidget {
@@ -31,6 +35,8 @@ class _MobileChatScreenState extends State<MobileChatScreen> {
   final FocusNode _focusNode = FocusNode();
   final ScrollController _scrollController = ScrollController();
 
+  final ValueNotifier<bool> isUploading = ValueNotifier(false);
+
   void sendMessage() async {
     if (_messageController.text.isNotEmpty) {
       await _chatService.sendMessage(
@@ -50,6 +56,36 @@ class _MobileChatScreenState extends State<MobileChatScreen> {
       duration: const Duration(milliseconds: 300),
       curve: Curves.easeOut,
     );
+  }
+
+  void _pickFiles() async {
+    FilePickerResult? result = await FilePicker.platform.pickFiles(
+      allowMultiple: true,
+      type: FileType.any,
+    );
+
+    if (result == null) return;
+
+    List<File> files = result.paths.map((path) => File(path!)).toList();
+    List<String> fileNames = result.files.map((file) => file.name).toList();
+
+    isUploading.value = true;
+
+    // Upload the files to firestore and get link
+    List<String> fileUrls = await StorageService().uploadFiles(
+      widget.receiverId,
+      files,
+      fileNames,
+    );
+
+    // Send the FileMessage
+    _chatService.sendFiles(
+      widget.receiverId,
+      fileUrls,
+      fileNames,
+    );
+
+    isUploading.value = false;
   }
 
   @override
@@ -112,92 +148,101 @@ class _MobileChatScreenState extends State<MobileChatScreen> {
           ),
           Padding(
             padding: const EdgeInsets.only(bottom: 10, left: 10, right: 10),
-            child: Row(
-              children: [
-                Expanded(
-                  child: TextField(
-                    controller: _messageController,
-                    focusNode: _focusNode,
-                    decoration: InputDecoration(
-                      filled: true,
-                      fillColor: mobileChatBoxColor,
-                      prefixIcon: Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 10),
-                        child: IconButton(
-                          onPressed: () {},
-                          icon: const Icon(
-                            Icons.emoji_emotions_outlined,
-                            color: Colors.grey,
+            child: ValueListenableBuilder(
+              valueListenable: isUploading,
+              builder: (context, value, child) {
+                if (value) {
+                  return const LinearProgressIndicator();
+                }
+
+                return Row(
+                  children: [
+                    Expanded(
+                      child: TextField(
+                        controller: _messageController,
+                        focusNode: _focusNode,
+                        decoration: InputDecoration(
+                          filled: true,
+                          fillColor: mobileChatBoxColor,
+                          prefixIcon: Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 10),
+                            child: IconButton(
+                              onPressed: () {},
+                              icon: const Icon(
+                                Icons.emoji_emotions_outlined,
+                                color: Colors.grey,
+                              ),
+                            ),
                           ),
-                        ),
-                      ),
-                      suffixIcon: Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 20),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.end,
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            IconButton(
-                              onPressed: () {},
-                              icon: const Icon(
-                                Icons.attach_file,
-                                color: Colors.grey,
-                              ),
+                          suffixIcon: Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 20),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.end,
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                IconButton(
+                                  onPressed: () => _pickFiles(),
+                                  icon: const Icon(
+                                    Icons.attach_file,
+                                    color: Colors.grey,
+                                  ),
+                                ),
+                                IconButton(
+                                  onPressed: () {},
+                                  icon: const Icon(
+                                    Icons.camera_alt,
+                                    color: Colors.grey,
+                                  ),
+                                ),
+                              ],
                             ),
-                            IconButton(
-                              onPressed: () {},
-                              icon: const Icon(
-                                Icons.camera_alt,
-                                color: Colors.grey,
-                              ),
+                          ),
+                          hintText: 'Type a message',
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(20),
+                            borderSide: const BorderSide(
+                              width: 0,
+                              style: BorderStyle.none,
                             ),
-                          ],
+                          ),
+                          contentPadding: const EdgeInsets.all(10),
                         ),
                       ),
-                      hintText: 'Type a message',
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(20),
-                        borderSide: const BorderSide(
-                          width: 0,
-                          style: BorderStyle.none,
-                        ),
-                      ),
-                      contentPadding: const EdgeInsets.all(10),
                     ),
-                  ),
-                ),
-                const Gap(5),
-                ValueListenableBuilder(
-                  valueListenable: _messageController,
-                  builder: (context, value, child) {
-                    if (_messageController.text.isNotEmpty) {
-                      return CircleAvatar(
-                        radius: 20,
-                        backgroundColor: tabColor,
-                        child: IconButton(
-                          onPressed: sendMessage,
-                          icon: const Icon(
-                            Icons.send,
-                            color: Colors.white,
-                          ),
-                        ),
-                      );
-                    } else {
-                      return CircleAvatar(
-                        radius: 20,
-                        backgroundColor: tabColor,
-                        child: IconButton(
-                          onPressed: () {},
-                          icon: const Icon(
-                            Icons.mic,
-                            color: Colors.white,
-                          ),
-                        ),
-                      );
-                    }
-                  },
-                )
-              ],
+                    const Gap(5),
+                    ValueListenableBuilder(
+                      valueListenable: _messageController,
+                      builder: (context, value, child) {
+                        if (_messageController.text.isNotEmpty) {
+                          return CircleAvatar(
+                            radius: 20,
+                            backgroundColor: tabColor,
+                            child: IconButton(
+                              onPressed: sendMessage,
+                              icon: const Icon(
+                                Icons.send,
+                                color: Colors.white,
+                              ),
+                            ),
+                          );
+                        } else {
+                          return CircleAvatar(
+                            radius: 20,
+                            backgroundColor: tabColor,
+                            child: IconButton(
+                              onPressed: () {},
+                              icon: const Icon(
+                                Icons.mic,
+                                color: Colors.white,
+                              ),
+                            ),
+                          );
+                        }
+                      },
+                    )
+                  ],
+                );
+              },
             ),
           )
         ],
