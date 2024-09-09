@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../../../utils/downloaded_files_box.dart';
 import '../../../widgets/chat_bubbles/my_file_message_card.dart';
 import '../../../widgets/chat_bubbles/sender_file_message_card.dart';
 import '../cubit/file_message_cubit.dart';
@@ -23,8 +24,10 @@ class FileMessageProvider extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isFileDownloaded = DownloadedFilesBox.isFileDownloaded(fileUrl);
+
     return BlocProvider(
-      create: (context) => FileMessageCubit(0.0),
+      create: (context) => FileMessageCubit(isFileDownloaded ? 1.0 : 0.0),
       child: isCurrentUser
           ? MyFileMessageCard(
               fileName: fileName,

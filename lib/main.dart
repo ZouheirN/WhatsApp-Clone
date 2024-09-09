@@ -24,6 +24,8 @@ Future<void> main() async {
     },
   );
 
+  await Hive.openBox('downloadedFiles');
+
   runApp(const MyApp());
 }
 

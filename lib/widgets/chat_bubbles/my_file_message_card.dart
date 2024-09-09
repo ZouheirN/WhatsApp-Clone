@@ -50,7 +50,6 @@ class MyFileMessageCard extends StatelessWidget {
                           child: Icon(
                             Icons.insert_drive_file,
                             size: 30,
-                            color: Colors.white,
                           ),
                         ),
                         const Gap(10),
@@ -60,7 +59,6 @@ class MyFileMessageCard extends StatelessWidget {
                             fileName,
                             style: const TextStyle(
                               fontSize: 16,
-                              color: Colors.white,
                             ),
                             overflow: TextOverflow.ellipsis,
                             textAlign: TextAlign.end,
@@ -87,7 +85,7 @@ class MyFileMessageCard extends StatelessWidget {
                             child: IconButton(
                               onPressed: () {
                                 context.read<FileMessageCubit>().openFile(
-                                      fileName: fileName,
+                                      fileUrl: fileUrl,
                                     );
                               },
                               icon: const Icon(Icons.done),

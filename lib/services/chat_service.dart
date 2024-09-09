@@ -78,20 +78,6 @@ class ChatService {
     ids.sort();
     String chatId = ids.join('_');
 
-    // // set the messages as read
-    // _firestore
-    //     .collection('chats')
-    //     .doc(chatId)
-    //     .collection('messages')
-    //     .where('senderId', isNotEqualTo: otherUserId)
-    //     .where('isRead', isEqualTo: false)
-    //     .get()
-    //     .then((snapshot) {
-    //   for (QueryDocumentSnapshot doc in snapshot.docs) {
-    //     doc.reference.update({'isRead': true});
-    //   }
-    // });
-
     return _firestore
         .collection('chats')
         .doc(chatId)
