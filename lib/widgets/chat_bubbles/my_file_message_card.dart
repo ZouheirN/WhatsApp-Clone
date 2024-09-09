@@ -45,34 +45,67 @@ class MyFileMessageCard extends StatelessWidget {
                     return Row(
                       mainAxisSize: MainAxisSize.min,
                       children: [
-                        const Icon(
-                          Icons.insert_drive_file,
-                          size: 30,
-                          color: Colors.white,
-                        ),
-                        const Gap(10),
-                        Text(
-                          fileName,
-                          style: const TextStyle(
-                            fontSize: 16,
+                        const Flexible(
+                          fit: FlexFit.loose,
+                          child: Icon(
+                            Icons.insert_drive_file,
+                            size: 30,
                             color: Colors.white,
                           ),
-                          textAlign: TextAlign.end,
+                        ),
+                        const Gap(10),
+                        Flexible(
+                          fit: FlexFit.loose,
+                          child: Text(
+                            fileName,
+                            style: const TextStyle(
+                              fontSize: 16,
+                              color: Colors.white,
+                            ),
+                            overflow: TextOverflow.ellipsis,
+                            textAlign: TextAlign.end,
+                          ),
                         ),
                         const Gap(10),
                         if (state == 0)
-                          IconButton(
-                            onPressed: () {
-                              context.read<FileMessageCubit>().downloadFile(
-                                    fileUrl: fileUrl,
-                                    fileName: fileName,
-                                  );
-                            },
-                            icon: const Icon(Icons.download_for_offline_outlined),
+                          Flexible(
+                            fit: FlexFit.loose,
+                            child: IconButton(
+                              onPressed: () {
+                                context.read<FileMessageCubit>().downloadFile(
+                                      fileUrl: fileUrl,
+                                      fileName: fileName,
+                                    );
+                              },
+                              icon: const Icon(
+                                  Icons.download_for_offline_outlined),
+                            ),
+                          )
+                        else if (state == 1)
+                          Flexible(
+                            fit: FlexFit.loose,
+                            child: IconButton(
+                              onPressed: () {
+                                context.read<FileMessageCubit>().openFile(
+                                      fileName: fileName,
+                                    );
+                              },
+                              icon: const Icon(Icons.done),
+                            ),
                           )
                         else
-                          CircularProgressIndicator(
-                            value: state,
+                          Flexible(
+                            fit: FlexFit.loose,
+                            child: IconButton(
+                              onPressed: null,
+                              icon: SizedBox(
+                                width: 20,
+                                height: 20,
+                                child: CircularProgressIndicator(
+                                  value: state,
+                                ),
+                              ),
+                            ),
                           ),
                       ],
                     );

@@ -1,7 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:gap/gap.dart';
 import 'package:whatsapp_clone/colors.dart';
-import 'package:whatsapp_clone/main.dart';
 import 'package:whatsapp_clone/screens/mobile_chat_screen.dart';
 import 'package:whatsapp_clone/services/chat_service.dart';
 import 'package:whatsapp_clone/utils/utilities_box.dart';
@@ -123,11 +123,15 @@ class ContactsList extends StatelessWidget {
         final latestMessage =
             snapshot.data?.docs.last.data() as Map<String, dynamic>?;
 
-        final message = latestMessage?['message'] ?? '';
+        String message = latestMessage?['message'] ?? '';
         final time = latestMessage?['timestamp'] ?? '';
         String parsedTime = '';
         if (time != '') {
           parsedTime = time.toDate().toString().substring(11, 16);
+        }
+
+        if (latestMessage!['fileUrl'] != null) {
+          message = latestMessage['fileName'];
         }
 
         return ListTile(
@@ -143,19 +147,52 @@ class ContactsList extends StatelessWidget {
           ),
           subtitle: Padding(
             padding: const EdgeInsets.only(top: 6.0),
-            child: Text(
-              message ?? '',
-              style: const TextStyle(
-                fontSize: 15,
-              ),
+            child: Row(
+              children: [
+                if (latestMessage['fileUrl'] != null)
+                  const Icon(Icons.description),
+                Flexible(
+                  fit: FlexFit.loose,
+                  child: Text(
+                    message,
+                    style: const TextStyle(
+                      fontSize: 15,
+                    ),
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                ),
+              ],
             ),
           ),
-          trailing: Text(
-            parsedTime,
-            style: const TextStyle(
-              fontSize: 13,
-              color: Colors.grey,
-            ),
+          trailing: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Flexible(
+                fit: FlexFit.loose,
+                child: Text(
+                  parsedTime,
+                  style: const TextStyle(
+                    fontSize: 13,
+                    color: Colors.grey,
+                  ),
+                  overflow: TextOverflow.ellipsis,
+                ),
+              ),
+              const Gap(10),
+              if (_auth.currentUser!.uid == latestMessage['senderId'])
+                if (latestMessage['isRead'])
+                  const Icon(
+                    Icons.done_all,
+                    color: Colors.grey,
+                    size: 20,
+                  )
+                else
+                  const Icon(
+                    Icons.done,
+                    color: Colors.grey,
+                    size: 20,
+                  ),
+            ],
           ),
         );
       },

@@ -1,5 +1,3 @@
-import 'dart:io';
-
 import 'package:file_picker/file_picker.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -57,16 +55,13 @@ class _WebScreenLayoutState extends State<WebScreenLayout> {
     );
   }
 
-  void _pickFile(bool isDocument) async {
+  void _pickFiles(bool isDocument) async {
     FilePickerResult? result = await FilePicker.platform.pickFiles(
       allowMultiple: true,
       type: isDocument ? FileType.any : FileType.media,
     );
 
     if (result == null) return;
-
-    // Uint8List fileBytes = result.files.first.bytes;
-    // String fileName = result.files.first.name;
 
     List<Uint8List> files = result.files.map((file) => file.bytes!).toList();
     List<String> fileNames = result.files.map((file) => file.name).toList();
@@ -240,10 +235,10 @@ class _WebScreenLayoutState extends State<WebScreenLayout> {
                                   onSelected: (value) {
                                     switch (value) {
                                       case 1:
-                                        _pickFile(true);
+                                        _pickFiles(true);
                                         break;
                                       case 2:
-                                        _pickFile(false);
+                                        _pickFiles(false);
                                         break;
                                       case 3:
                                         break;

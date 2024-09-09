@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:whatsapp_clone/features/file_message/ui/file_message_provider.dart';
+import 'package:whatsapp_clone/main.dart';
 import 'package:whatsapp_clone/services/chat_service.dart';
 import 'package:whatsapp_clone/widgets/chat_bubbles/sender_file_message_card.dart';
 import 'package:whatsapp_clone/widgets/chat_bubbles/sender_message_card.dart';
@@ -66,6 +67,9 @@ class _ChatListState extends State<ChatList> {
             );
           }
         });
+
+        // Set the isRead status to true
+        _chatService.markMessagesAsRead(widget.receiverId, widget.senderId);
 
         return ListView(
           controller: widget.scrollController,
