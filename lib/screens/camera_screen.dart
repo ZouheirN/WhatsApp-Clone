@@ -4,6 +4,7 @@ import 'package:whatsapp_clone/colors.dart';
 import 'package:whatsapp_clone/main.dart';
 import 'package:whatsapp_clone/screens/camera_image_view.dart';
 import 'package:whatsapp_clone/screens/camera_video_view.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class CameraScreen extends StatefulWidget {
   const CameraScreen({super.key});
@@ -178,9 +179,9 @@ class _CameraScreenState extends State<CameraScreen> {
                         ),
                       ],
                     ),
-                    const Text(
-                      'Hold for video, tap for photo',
-                      style: TextStyle(
+                    Text(
+                      AppLocalizations.of(context)!.cameraCaption,
+                      style: const TextStyle(
                         color: Colors.white,
                       ),
                       textAlign: TextAlign.center,

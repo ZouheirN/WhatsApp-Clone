@@ -12,5 +12,6 @@
     "signOut": "تسجيل الخروج",
     "logOut": "تسجيل الخروج",
     "settings": "الإعدادات",
-    "typeAMessage": "اكتب رسالة"
+    "typeAMessage": "اكتب رسالة",
+    "cameraCaption": "اضغط للفيديو، انقر للصورة"
 }

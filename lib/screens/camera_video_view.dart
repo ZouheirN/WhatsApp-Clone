@@ -38,32 +38,6 @@ class _CameraVideoViewScreenState extends State<CameraVideoViewScreen> {
       backgroundColor: mobileChatBoxColor,
       appBar: AppBar(
         backgroundColor: appBarColor,
-        actions: [
-          IconButton(
-            onPressed: () {},
-            icon: const Icon(
-              Icons.crop_rotate,
-            ),
-          ),
-          IconButton(
-            onPressed: () {},
-            icon: const Icon(
-              Icons.emoji_emotions,
-            ),
-          ),
-          IconButton(
-            onPressed: () {},
-            icon: const Icon(
-              Icons.title,
-            ),
-          ),
-          IconButton(
-            onPressed: () {},
-            icon: const Icon(
-              Icons.edit,
-            ),
-          ),
-        ],
       ),
       body: SizedBox(
         width: MediaQuery.of(context).size.width,

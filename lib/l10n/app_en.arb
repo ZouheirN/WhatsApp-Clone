@@ -54,5 +54,9 @@
     "typeAMessage": "Type a message",
     "@typeAMessage": {
         "description": "Type a message"
+    },
+    "cameraCaption": "Hold for video, tap for photo",
+    "@cameraCaption": {
+        "description": "Camera Caption"
     }
 }
