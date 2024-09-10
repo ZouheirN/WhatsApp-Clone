@@ -1,3 +1,4 @@
+import 'package:camera/camera.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -15,20 +16,24 @@ import 'firebase_options.dart';
 
 final logger = Logger();
 
+late List<CameraDescription> cameras;
+
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await Hive.initFlutter();
+
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
 
+  await Hive.initFlutter();
   await Hive.openBox('utilities').then(
     (value) {
       value.put('selectedUser', null);
     },
   );
-
   await Hive.openBox('downloadedFiles');
+
+  cameras = await availableCameras();
 
   runApp(const MyApp());
 }

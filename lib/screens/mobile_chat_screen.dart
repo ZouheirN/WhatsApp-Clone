@@ -3,10 +3,11 @@ import 'dart:io';
 import 'package:file_picker/file_picker.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:gap/gap.dart';
 import 'package:whatsapp_clone/colors.dart';
+import 'package:whatsapp_clone/screens/camera_screen.dart';
 import 'package:whatsapp_clone/services/chat_service.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import '../services/storage_service.dart';
 import '../widgets/chat_list.dart';
@@ -164,7 +165,14 @@ class _MobileChatScreenState extends State<MobileChatScreen> {
                                   ),
                                 ),
                                 IconButton(
-                                  onPressed: () {},
+                                  onPressed: () {
+                                    Navigator.of(context).push(
+                                      MaterialPageRoute(
+                                        builder: (context) =>
+                                            const CameraScreen(),
+                                      ),
+                                    );
+                                  },
                                   icon: const Icon(
                                     Icons.camera_alt,
                                     color: Colors.grey,
