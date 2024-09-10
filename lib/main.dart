@@ -38,6 +38,7 @@ Future<void> main() async {
   } on CameraException catch (e) {
     logger.e(e.toString());
   }
+
   runApp(const MyApp());
 }
 

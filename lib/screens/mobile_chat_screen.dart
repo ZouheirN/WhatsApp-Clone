@@ -99,11 +99,36 @@ class _MobileChatScreenState extends State<MobileChatScreen> {
               backgroundImage: NetworkImage(widget.receiverProfilePic),
             ),
             const Gap(10),
-            Text(
-              widget.receiverPhoneNumber,
-              style: const TextStyle(
-                fontSize: 16,
-              ),
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  widget.receiverPhoneNumber,
+                  style: const TextStyle(
+                    fontSize: 16,
+                  ),
+                ),
+                StreamBuilder(
+                  stream: _chatService.isUserOnline(widget.receiverId),
+                  builder: (context, snapshot) {
+                    if (snapshot.connectionState == ConnectionState.active) {
+                      final bool isOnline = snapshot.data as bool;
+
+                      if (isOnline) {
+                        return Text(
+                          AppLocalizations.of(context)!.online,
+                          style: const TextStyle(
+                            fontSize: 12,
+                            color: Colors.grey,
+                          ),
+                        );
+                      }
+                    }
+
+                    return const SizedBox();
+                  },
+                ),
+              ],
             ),
           ],
         ),

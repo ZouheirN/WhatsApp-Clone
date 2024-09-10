@@ -137,6 +137,7 @@ class _WebScreenLayoutState extends State<WebScreenLayout> {
                             box.get('selectedUser')['phone'],
                         selectedUserProfilePic:
                             box.get('selectedUser')['profilePic'],
+                        selectedUserId: box.get('selectedUser')['uid'],
                       ),
                       Expanded(
                         child: ChatList(

@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:whatsapp_clone/colors.dart';
+import 'package:whatsapp_clone/services/chat_service.dart';
 
-class WebChatAppbar extends StatelessWidget {
+class WebChatAppbar extends StatefulWidget {
+  final String selectedUserId;
   final String selectedUserPhoneNumber;
   final String selectedUserProfilePic;
 
@@ -9,27 +12,63 @@ class WebChatAppbar extends StatelessWidget {
     super.key,
     required this.selectedUserPhoneNumber,
     required this.selectedUserProfilePic,
+    required this.selectedUserId,
   });
+
+  @override
+  State<WebChatAppbar> createState() => _WebChatAppbarState();
+}
+
+class _WebChatAppbarState extends State<WebChatAppbar> {
+  final ChatService _chatService = ChatService();
 
   @override
   Widget build(BuildContext context) {
     return Container(
       height: MediaQuery.of(context).size.height * 0.077,
-      padding: const EdgeInsets.all(10),
+      padding: const EdgeInsets.all(8),
       color: webAppBarColor,
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           CircleAvatar(
-            backgroundImage: NetworkImage(selectedUserProfilePic),
+            backgroundImage: NetworkImage(widget.selectedUserProfilePic),
             radius: 30,
           ),
-          Text(
-            selectedUserPhoneNumber,
-            style: const TextStyle(
-              fontSize: 20,
-              color: Colors.white,
-            ),
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                widget.selectedUserPhoneNumber,
+                style: const TextStyle(
+                  fontSize: 14,
+                  color: Colors.white,
+                ),
+              ),
+              StreamBuilder(
+                stream: _chatService.isUserOnline(widget.selectedUserId),
+                builder: (context, snapshot) {
+                  if (snapshot.connectionState == ConnectionState.active) {
+                    final bool isOnline = snapshot.data as bool;
+
+                    if (isOnline) {
+                      return Flexible(
+                        fit: FlexFit.loose,
+                        child: Text(
+                          AppLocalizations.of(context)!.online,
+                          style: const TextStyle(
+                            fontSize: 12,
+                            color: Colors.grey,
+                          ),
+                        ),
+                      );
+                    }
+                  }
+
+                  return const SizedBox();
+                },
+              ),
+            ],
           ),
           const Spacer(),
           IconButton(

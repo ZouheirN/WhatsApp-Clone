@@ -21,6 +21,16 @@ class ChatService {
     );
   }
 
+  Stream<bool> isUserOnline(String userId) {
+    return _firestore.collection('users').doc(userId).snapshots().map(
+      (snapshot) {
+        final user = snapshot.data() as Map<String, dynamic>;
+
+        return user['isOnline'];
+      },
+    );
+  }
+
   Future<void> sendMessage(String receiverId, String message) async {
     final String currentUserId = _auth.currentUser!.uid;
     final String currentUserPhoneNumber = _auth.currentUser!.phoneNumber!;
