@@ -1,6 +1,5 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-import 'package:gap/gap.dart';
 import 'package:whatsapp_clone/colors.dart';
 
 class SenderImageMessageCard extends StatelessWidget {
@@ -21,7 +20,9 @@ class SenderImageMessageCard extends StatelessWidget {
       alignment: Alignment.centerLeft,
       child: ConstrainedBox(
         constraints: BoxConstraints(
-          maxWidth: MediaQuery.of(context).size.width - 45,
+          maxWidth: MediaQuery.of(context).size.width > 600
+              ? MediaQuery.of(context).size.width * 0.3
+              : MediaQuery.of(context).size.width - 45,
           minWidth: 120,
         ),
         child: Card(

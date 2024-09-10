@@ -1,7 +1,9 @@
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 import 'package:whatsapp_clone/colors.dart';
+import 'package:whatsapp_clone/main.dart';
 
 class MyImageMessageCard extends StatelessWidget {
   final String imageUrl;
@@ -23,7 +25,7 @@ class MyImageMessageCard extends StatelessWidget {
       alignment: Alignment.centerRight,
       child: ConstrainedBox(
         constraints: BoxConstraints(
-          maxWidth: MediaQuery.of(context).size.width - 45,
+          maxWidth: MediaQuery.of(context).size.width > 600 ? MediaQuery.of(context).size.width * 0.3 : MediaQuery.of(context).size.width - 45,
           minWidth: 120,
         ),
         child: Card(
@@ -60,10 +62,14 @@ class MyImageMessageCard extends StatelessWidget {
                           color: Colors.white,
                         ),
                       ),
-                      errorWidget: (context, url, error) => const Icon(
+                      errorWidget: (context, url, error) {
+                        logger.e('Error loading image: $error');
+
+                        return const Icon(
                         Icons.error,
                         color: Colors.red,
-                      ),
+                      );
+                      },
                     ),
                   ),
                   if (caption != null)

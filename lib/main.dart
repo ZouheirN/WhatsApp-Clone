@@ -33,8 +33,11 @@ Future<void> main() async {
   );
   await Hive.openBox('downloadedFiles');
 
-  cameras = await availableCameras();
-
+  try {
+    cameras = await availableCameras();
+  } on CameraException catch (e) {
+    logger.e(e.toString());
+  }
   runApp(const MyApp());
 }
 
