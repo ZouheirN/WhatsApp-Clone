@@ -10,11 +10,12 @@ class SenderFileMessageCard extends StatelessWidget {
   final String fileName;
   final String time;
 
-  const SenderFileMessageCard(
-      {super.key,
-      required this.fileUrl,
-      required this.time,
-      required this.fileName});
+  const SenderFileMessageCard({
+    super.key,
+    required this.fileUrl,
+    required this.time,
+    required this.fileName,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -67,9 +68,9 @@ class SenderFileMessageCard extends StatelessWidget {
                             child: IconButton(
                               onPressed: () {
                                 context.read<FileMessageCubit>().downloadFile(
-                                  fileUrl: fileUrl,
-                                  fileName: fileName,
-                                );
+                                      fileUrl: fileUrl,
+                                      fileName: fileName,
+                                    );
                               },
                               icon: const Icon(
                                   Icons.download_for_offline_outlined),
@@ -81,8 +82,8 @@ class SenderFileMessageCard extends StatelessWidget {
                             child: IconButton(
                               onPressed: () {
                                 context.read<FileMessageCubit>().openFile(
-                                  fileUrl: fileUrl,
-                                );
+                                      fileUrl: fileUrl,
+                                    );
                               },
                               icon: const Icon(Icons.done),
                             ),

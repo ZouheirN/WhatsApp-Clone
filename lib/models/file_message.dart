@@ -8,6 +8,8 @@ class FileMessage {
   final String fileName;
   final Timestamp timestamp;
   final bool isRead;
+  final String type;
+  final String? caption;
 
   FileMessage({
     required this.senderId,
@@ -17,6 +19,8 @@ class FileMessage {
     required this.fileName,
     required this.timestamp,
     this.isRead = false,
+    required this.type,
+    this.caption,
   });
 
   Map<String, dynamic> toMap() {
@@ -28,6 +32,8 @@ class FileMessage {
       'fileName': fileName,
       'timestamp': timestamp,
       'isRead': isRead,
+      'type': type,
+      'caption': caption,
     };
   }
 }

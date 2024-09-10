@@ -46,7 +46,10 @@ class ChatService {
   }
 
   Future<void> sendFiles(
-      String receiverId, List<String> filesUrl, List<String> fileNames) async {
+    String receiverId,
+    List<String> filesUrl,
+    List<String> fileNames,
+  ) async {
     final String currentUserId = _auth.currentUser!.uid;
     final String currentUserPhoneNumber = _auth.currentUser!.phoneNumber!;
     final Timestamp timestamp = Timestamp.now();
@@ -59,6 +62,7 @@ class ChatService {
         fileUrl: fileUrl,
         fileName: fileNames[filesUrl.indexOf(fileUrl)],
         timestamp: timestamp,
+        type: 'file',
       );
 
       List<String> ids = [currentUserId, receiverId];
@@ -70,6 +74,74 @@ class ChatService {
           .doc(chatId)
           .collection('messages')
           .add(newFileMessage.toMap());
+    }
+  }
+
+  Future<void> sendImages({
+    required String receiverId,
+    required List<String> imagesUrl,
+    required List<String> imageNames,
+    required List<String?> captions,
+  }) async {
+    final String currentUserId = _auth.currentUser!.uid;
+    final String currentUserPhoneNumber = _auth.currentUser!.phoneNumber!;
+    final Timestamp timestamp = Timestamp.now();
+
+    for (String imageUrl in imagesUrl) {
+      FileMessage newImageMessage = FileMessage(
+        senderId: currentUserId,
+        senderPhoneNumber: currentUserPhoneNumber,
+        receiverId: receiverId,
+        fileUrl: imageUrl,
+        fileName: imageNames[imagesUrl.indexOf(imageUrl)],
+        timestamp: timestamp,
+        caption: captions[imagesUrl.indexOf(imageUrl)],
+        type: 'image',
+      );
+
+      List<String> ids = [currentUserId, receiverId];
+      ids.sort();
+      String chatId = ids.join('_');
+
+      await _firestore
+          .collection('chats')
+          .doc(chatId)
+          .collection('messages')
+          .add(newImageMessage.toMap());
+    }
+  }
+
+  Future<void> sendVideos({
+    required String receiverId,
+    required List<String> videosUrl,
+    required List<String> videoNames,
+    required List<String> captions,
+  }) async {
+    final String currentUserId = _auth.currentUser!.uid;
+    final String currentUserPhoneNumber = _auth.currentUser!.phoneNumber!;
+    final Timestamp timestamp = Timestamp.now();
+
+    for (String videoUrl in videosUrl) {
+      FileMessage newVideoMessage = FileMessage(
+        senderId: currentUserId,
+        senderPhoneNumber: currentUserPhoneNumber,
+        receiverId: receiverId,
+        fileUrl: videoUrl,
+        fileName: videoNames[videosUrl.indexOf(videoUrl)],
+        timestamp: timestamp,
+        caption: captions[videosUrl.indexOf(videoUrl)],
+        type: 'video',
+      );
+
+      List<String> ids = [currentUserId, receiverId];
+      ids.sort();
+      String chatId = ids.join('_');
+
+      await _firestore
+          .collection('chats')
+          .doc(chatId)
+          .collection('messages')
+          .add(newVideoMessage.toMap());
     }
   }
 

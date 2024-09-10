@@ -168,8 +168,9 @@ class _MobileChatScreenState extends State<MobileChatScreen> {
                                   onPressed: () {
                                     Navigator.of(context).push(
                                       MaterialPageRoute(
-                                        builder: (context) =>
-                                            const CameraScreen(),
+                                        builder: (context) => CameraScreen(
+                                          receiverId: widget.receiverId,
+                                        ),
                                       ),
                                     );
                                   },

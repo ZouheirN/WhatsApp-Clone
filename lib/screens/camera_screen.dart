@@ -7,7 +7,9 @@ import 'package:whatsapp_clone/screens/camera_video_view.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class CameraScreen extends StatefulWidget {
-  const CameraScreen({super.key});
+  final String receiverId;
+
+  const CameraScreen({super.key, required this.receiverId});
 
   @override
   State<CameraScreen> createState() => _CameraScreenState();
@@ -44,6 +46,7 @@ class _CameraScreenState extends State<CameraScreen> {
       MaterialPageRoute(
         builder: (context) => CameraImageViewScreen(
           image: file,
+          receiverId: widget.receiverId,
         ),
       ),
     );

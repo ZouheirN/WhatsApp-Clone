@@ -1,13 +1,79 @@
 import 'dart:io';
 
 import 'package:camera/camera.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:whatsapp_clone/colors.dart';
+import 'package:whatsapp_clone/main.dart';
+import 'package:whatsapp_clone/services/chat_service.dart';
+import 'package:whatsapp_clone/services/storage_service.dart';
 
-class CameraImageViewScreen extends StatelessWidget {
+class CameraImageViewScreen extends StatefulWidget {
   final XFile image;
+  final String receiverId;
 
-  const CameraImageViewScreen({super.key, required this.image});
+  const CameraImageViewScreen({
+    super.key,
+    required this.image,
+    required this.receiverId,
+  });
+
+  @override
+  State<CameraImageViewScreen> createState() => _CameraImageViewScreenState();
+}
+
+class _CameraImageViewScreenState extends State<CameraImageViewScreen> {
+  late XFile previewImage;
+
+  final TextEditingController _captionController = TextEditingController();
+
+  final ValueNotifier<bool> isUploading = ValueNotifier(false);
+
+  final StorageService _storageService = StorageService();
+  final ChatService _chatService = ChatService();
+
+  @override
+  void initState() {
+    previewImage = widget.image;
+    super.initState();
+  }
+
+  Future<void> _uploadImage() async {
+    isUploading.value = true;
+    final caption = _captionController.text.trim().isEmpty
+        ? null
+        : _captionController.text.trim();
+
+    if (kIsWeb) {
+      final urls = await _storageService.uploadFilesWeb(
+        widget.receiverId,
+        [File(previewImage.path).readAsBytesSync()],
+        [previewImage.name],
+      );
+
+      _chatService.sendImages(
+        receiverId: widget.receiverId,
+        imagesUrl: urls,
+        imageNames: [previewImage.name],
+        captions: [caption],
+      );
+    } else {
+      final urls = await _storageService.uploadFiles(
+        widget.receiverId,
+        [File(previewImage.path)],
+        [previewImage.name],
+      );
+
+      _chatService.sendImages(
+        receiverId: widget.receiverId,
+        imagesUrl: urls,
+        imageNames: [previewImage.name],
+        captions: [caption],
+      );
+    }
+
+    isUploading.value = false;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -17,9 +83,18 @@ class CameraImageViewScreen extends StatelessWidget {
         backgroundColor: appBarColor,
         actions: [
           IconButton(
-            onPressed: () {},
+            onPressed: () async {
+              // final img.Image image = img.decodeImage(File(previewImage.path).readAsBytesSync())!;
+              // final img.Image rotatedImage = img.copyRotate(image, angle: 90);
+              //
+              // final File rotatedFile = File(previewImage.path)..writeAsBytesSync(img.encodeJpg(rotatedImage));
+              //
+              // setState(() {
+              //   previewImage = XFile(rotatedFile.path);
+              // });
+            },
             icon: const Icon(
-              Icons.crop_rotate,
+              Icons.rotate_left,
             ),
           ),
           IconButton(
@@ -51,7 +126,7 @@ class CameraImageViewScreen extends StatelessWidget {
               width: MediaQuery.of(context).size.width,
               height: MediaQuery.of(context).size.height - 150,
               child: Image.file(
-                File(image.path),
+                File(previewImage.path),
                 fit: BoxFit.cover,
               ),
             ),
@@ -68,33 +143,51 @@ class CameraImageViewScreen extends StatelessWidget {
                       color: textColor,
                       size: 28,
                     ),
-                    const Expanded(
+                    Expanded(
                       child: TextField(
+                        controller: _captionController,
                         maxLines: 6,
                         minLines: 1,
-                        decoration: InputDecoration(
+                        decoration: const InputDecoration(
                           hintText: 'Add a caption...',
                           hintStyle: TextStyle(
                             color: textColor,
                           ),
                           border: InputBorder.none,
                         ),
-                        style: TextStyle(
+                        style: const TextStyle(
                           color: textColor,
                         ),
                       ),
                     ),
-                    CircleAvatar(
-                      radius: 25,
-                      backgroundColor: tabColor,
-                      child: IconButton(
-                        onPressed: () {},
-                        icon: const Icon(
-                          Icons.send,
-                          color: Colors.white,
-                          size: 28,
-                        ),
-                      ),
+                    ValueListenableBuilder(
+                      valueListenable: isUploading,
+                      builder: (context, value, child) {
+                        return CircleAvatar(
+                          radius: 25,
+                          backgroundColor: tabColor,
+                          child: IconButton(
+                            onPressed: () async {
+                              if (value) return;
+
+                              await _uploadImage();
+
+                              if (!context.mounted) return;
+                              Navigator.pop(context);
+                              Navigator.pop(context);
+                            },
+                            icon: value
+                                ? const CircularProgressIndicator(
+                                    color: Colors.white,
+                                  )
+                                : const Icon(
+                                    Icons.send,
+                                    color: Colors.white,
+                                    size: 28,
+                                  ),
+                          ),
+                        );
+                      },
                     )
                   ],
                 ),

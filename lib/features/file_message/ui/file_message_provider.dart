@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:whatsapp_clone/widgets/chat_bubbles/my_image_message_card.dart';
+import 'package:whatsapp_clone/widgets/chat_bubbles/sender_image_message_card.dart';
 
 import '../../../utils/downloaded_files_box.dart';
 import '../../../widgets/chat_bubbles/my_file_message_card.dart';
@@ -12,6 +14,8 @@ class FileMessageProvider extends StatelessWidget {
   final String fileUrl;
   final String time;
   final bool isRead;
+  final String type;
+  final String? caption;
 
   const FileMessageProvider({
     super.key,
@@ -20,6 +24,8 @@ class FileMessageProvider extends StatelessWidget {
     required this.fileUrl,
     required this.time,
     this.isRead = false,
+    required this.type,
+    this.caption,
   });
 
   @override
@@ -28,18 +34,42 @@ class FileMessageProvider extends StatelessWidget {
 
     return BlocProvider(
       create: (context) => FileMessageCubit(isFileDownloaded ? 1.0 : 0.0),
-      child: isCurrentUser
-          ? MyFileMessageCard(
-              fileName: fileName,
-              fileUrl: fileUrl,
-              isRead: isRead,
-              time: time,
-            )
-          : SenderFileMessageCard(
-              fileName: fileName,
-              fileUrl: fileUrl,
-              time: time,
-            ),
+      child: getAppropriateMessageType(),
     );
+  }
+
+  Widget getAppropriateMessageType() {
+    switch (type) {
+      case 'file':
+        return isCurrentUser
+            ? MyFileMessageCard(
+                fileName: fileName,
+                fileUrl: fileUrl,
+                isRead: isRead,
+                time: time,
+              )
+            : SenderFileMessageCard(
+                fileName: fileName,
+                fileUrl: fileUrl,
+                time: time,
+              );
+      case 'image':
+        return isCurrentUser
+            ? MyImageMessageCard(
+                imageUrl: fileUrl,
+                caption: caption,
+                time: time,
+                isRead: isRead,
+              )
+            : SenderImageMessageCard(
+                imageUrl: fileUrl,
+                caption: caption,
+                time: time,
+              );
+      case 'video':
+        return const SizedBox();
+      default:
+        return const SizedBox();
+    }
   }
 }

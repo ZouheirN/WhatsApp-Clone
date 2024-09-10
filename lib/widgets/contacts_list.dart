@@ -130,8 +130,14 @@ class ContactsList extends StatelessWidget {
           parsedTime = time.toDate().toString().substring(11, 16);
         }
 
-        if (latestMessage!['fileUrl'] != null) {
+        if (latestMessage!['type'] == 'file') {
           message = latestMessage['fileName'];
+        } else if (latestMessage['type'] == 'image') {
+          if (latestMessage['caption'] != null) {
+            message = latestMessage['caption'];
+          } else {
+            message = 'Image';
+          }
         }
 
         return ListTile(
@@ -149,8 +155,12 @@ class ContactsList extends StatelessWidget {
             padding: const EdgeInsets.only(top: 6.0),
             child: Row(
               children: [
-                if (latestMessage['fileUrl'] != null)
-                  const Icon(Icons.description),
+                if (latestMessage['type'] == 'file')
+                  const Icon(Icons.description)
+                else if (latestMessage['type'] == 'image')
+                  const Icon(Icons.image)
+                else if (latestMessage['type'] == 'video')
+                  const Icon(Icons.videocam),
                 Flexible(
                   fit: FlexFit.loose,
                   child: Text(

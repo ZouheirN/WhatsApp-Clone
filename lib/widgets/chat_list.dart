@@ -37,21 +37,23 @@ class ChatList extends StatelessWidget {
         }
 
         // Once the messages are loaded or updated, scroll to the bottom
-        WidgetsBinding.instance.addPostFrameCallback((_) {
-          if (scrollController.hasClients) {
-            scrollController.animateTo(
-              scrollController.position.maxScrollExtent + 200,
-              duration: const Duration(milliseconds: 300),
-              curve: Curves.easeOut,
-            );
-          }
-        });
+        // WidgetsBinding.instance.addPostFrameCallback((_) {
+        //   if (scrollController.hasClients) {
+        //     // scrollController.animateTo(
+        //     //   scrollController.position.maxScrollExtent + 200,
+        //     //   duration: const Duration(milliseconds: 300),
+        //     //   curve: Curves.easeOut,
+        //     // );
+        //     scrollController.jumpTo(scrollController.position.maxScrollExtent);
+        //   }
+        // });
 
         // Set the isRead status to true
         _chatService.markMessagesAsRead(receiverId, senderId);
 
         return ListView(
           controller: scrollController,
+          reverse: true,
           children: snapshot.data!.docs.map(
             (doc) {
               Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
@@ -62,13 +64,15 @@ class ChatList extends StatelessWidget {
               final String parsedTime =
                   data['timestamp'].toDate().toString().substring(11, 16);
 
-              if (data['fileUrl'] != null) {
+              if (data['type'] != null) {
                 return FileMessageProvider(
                   isCurrentUser: isCurrentUser,
                   fileUrl: data['fileUrl'],
                   fileName: data['fileName'],
                   time: parsedTime,
                   isRead: data['isRead'],
+                  type: data['type'],
+                  caption: data['caption'],
                 );
               }
 
@@ -85,7 +89,7 @@ class ChatList extends StatelessWidget {
                 );
               }
             },
-          ).toList(),
+          ).toList().reversed.toList(),
         );
       },
     );
