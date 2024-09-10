@@ -42,17 +42,7 @@ class _WebScreenLayoutState extends State<WebScreenLayout> {
       );
 
       _messageController.clear();
-
-      scrollToBottom();
     }
-  }
-
-  void scrollToBottom() {
-    _scrollController.animateTo(
-      _scrollController.position.maxScrollExtent,
-      duration: const Duration(milliseconds: 300),
-      curve: Curves.easeOut,
-    );
   }
 
   void _pickFiles(bool isDocument) async {
@@ -85,11 +75,6 @@ class _WebScreenLayoutState extends State<WebScreenLayout> {
     );
 
     isUploading.value = false;
-  }
-
-  @override
-  void initState() {
-    super.initState();
   }
 
   @override

@@ -45,18 +45,6 @@ class _MobileChatScreenState extends State<MobileChatScreen> {
       );
 
       _messageController.clear();
-
-      scrollToBottom();
-    }
-  }
-
-  void scrollToBottom() {
-    if (_scrollController.hasClients) {
-      _scrollController.animateTo(
-        _scrollController.position.maxScrollExtent,
-        duration: const Duration(milliseconds: 300),
-        curve: Curves.easeOut,
-      );
     }
   }
 
@@ -88,21 +76,6 @@ class _MobileChatScreenState extends State<MobileChatScreen> {
     );
 
     isUploading.value = false;
-  }
-
-  @override
-  void initState() {
-    _focusNode.addListener(() {
-      // if (_focusNode.hasFocus) {
-      //   _chatService.markMessagesAsRead(widget.receiverId);
-      // }
-    });
-
-    Future.delayed(const Duration(milliseconds: 500), () {
-      scrollToBottom();
-    });
-
-    super.initState();
   }
 
   @override
