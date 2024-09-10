@@ -6,6 +6,7 @@ import 'package:gap/gap.dart';
 import 'package:whatsapp_clone/colors.dart';
 import 'package:whatsapp_clone/screens/web_settings_screen.dart';
 import 'package:whatsapp_clone/utils/utilities_box.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import '../services/chat_service.dart';
 import '../services/storage_service.dart';
@@ -252,7 +253,7 @@ class _WebScreenLayoutState extends State<WebScreenLayout> {
                                       decoration: InputDecoration(
                                         fillColor: searchBarColor,
                                         filled: true,
-                                        hintText: 'Type a message',
+                                        hintText: AppLocalizations.of(context)!.typeAMessage,
                                         border: OutlineInputBorder(
                                           borderRadius:
                                               BorderRadius.circular(20),

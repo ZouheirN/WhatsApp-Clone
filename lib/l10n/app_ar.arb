@@ -1,0 +1,16 @@
+{
+    "language": "العربية",
+    "account": "حساب",
+    "accountDescription": "إشعارات الأمان، تغيير الرقم",
+    "privacy": "الخصوصية",
+    "privacyDescription": "حظر الاتصالات، الرسائل الزائلة",
+    "chats": "الدردشات",
+    "chatsDescription": "السمات، الخلفيات، تاريخ الدردشة",
+    "notifications": "الإشعارات",
+    "notificationsDescription": "نغمات الرسائل، المجموعات والمكالمات",
+    "appLanguage": "لغة التطبيق",
+    "signOut": "تسجيل الخروج",
+    "logOut": "تسجيل الخروج",
+    "settings": "الإعدادات",
+    "typeAMessage": "اكتب رسالة"
+}

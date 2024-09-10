@@ -1,0 +1,58 @@
+{
+    "language": "English",
+    "@language": {
+        "description": "The current language"
+    },
+    "account": "Account",
+    "@account": {
+        "description": "Account"
+    },
+    "accountDescription": "Security notifications, change number",
+    "@accountDescription": {
+        "description": "Account Description"
+    },
+    "privacy": "Privacy",
+    "@privacy": {
+        "description": "Privacy"
+    },
+    "privacyDescription": "Block contacts, disappearing messages",
+    "@privacyDescription": {
+        "description": "Privacy Description"
+    },
+    "chats": "Chats",
+    "@chats": {
+        "description": "Chats"
+    },
+    "chatsDescription": "Theme, wallpapers, chat history",
+    "@chatsDescription": {
+        "description": "Chats Description"
+    },
+    "notifications": "Notifications",
+    "@notifications": {
+        "description": "Notifications"
+    },
+    "notificationsDescription": "Message, group & call tones",
+    "@notificationsDescription": {
+        "description": "Notifications Description"
+    },
+    "appLanguage": "App language",
+    "@appLanguage": {
+        "description": "App language"
+    },
+    "signOut": "Sign Out",
+    "@signOut": {
+        "description": "Sign Out"
+    },
+    "logOut": "Log Out",
+    "@logOut": {
+        "description": "Log Out"
+    },
+    "settings": "Settings",
+    "@settings": {
+        "description": "Settings"
+    },
+    "typeAMessage": "Type a message",
+    "@typeAMessage": {
+        "description": "Type a message"
+    }
+}

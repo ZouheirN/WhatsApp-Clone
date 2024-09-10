@@ -23,4 +23,16 @@ class UtilitiesBox {
   static ValueListenable watchSelectedUser() {
     return _utilitiesBox.listenable(keys: ['selectedUser']);
   }
+
+  static void setLanguage(String languageCode) {
+    _utilitiesBox.put('language', languageCode);
+  }
+
+  static String getLanguage() {
+    return _utilitiesBox.get('language', defaultValue: 'en');
+  }
+
+  static ValueListenable watchLanguage() {
+    return _utilitiesBox.listenable(keys: ['language']);
+  }
 }

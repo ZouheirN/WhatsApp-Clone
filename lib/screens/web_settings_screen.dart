@@ -1,6 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import '../colors.dart';
 import '../features/authentication/cubit/auth_cubit.dart';
@@ -36,9 +37,9 @@ class WebSettingsScreen extends StatelessWidget {
         ),
         ListTile(
           leading: const Icon(Icons.account_circle),
-          title: const Text(
-            'Account',
-            style: TextStyle(
+          title:  Text(
+            AppLocalizations.of(context)!.account,
+            style: const TextStyle(
               fontSize: 16,
             ),
           ),
@@ -51,9 +52,9 @@ class WebSettingsScreen extends StatelessWidget {
         ),
         ListTile(
           leading: const Icon(Icons.lock),
-          title: const Text(
-            'Privacy',
-            style: TextStyle(
+          title:  Text(
+            AppLocalizations.of(context)!.privacy,
+            style: const TextStyle(
               fontSize: 16,
             ),
           ),
@@ -66,9 +67,9 @@ class WebSettingsScreen extends StatelessWidget {
         ),
         ListTile(
           leading: const Icon(Icons.chat),
-          title: const Text(
-            'Chats',
-            style: TextStyle(
+          title: Text(
+            AppLocalizations.of(context)!.chats,
+            style: const TextStyle(
               fontSize: 16,
             ),
           ),
@@ -81,9 +82,9 @@ class WebSettingsScreen extends StatelessWidget {
         ),
         ListTile(
           leading: const Icon(Icons.notifications),
-          title: const Text(
-            'Notifications',
-            style: TextStyle(
+          title: Text(
+            AppLocalizations.of(context)!.notifications,
+            style: const TextStyle(
               fontSize: 16,
             ),
           ),
@@ -99,9 +100,9 @@ class WebSettingsScreen extends StatelessWidget {
             Icons.logout,
             color: Colors.red,
           ),
-          title: const Text(
-            'Log out',
-            style: TextStyle(
+          title: Text(
+            AppLocalizations.of(context)!.logOut,
+            style: const TextStyle(
               fontSize: 16,
               color: Colors.red,
             ),
