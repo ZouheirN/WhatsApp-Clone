@@ -10,7 +10,7 @@ plugins {
 
 android {
     namespace = "com.zouheirn.whatsappclone.whatsapp_clone"
-    compileSdk = flutter.compileSdkVersion
+    compileSdk = 34
     ndkVersion = flutter.ndkVersion
 
     compileOptions {

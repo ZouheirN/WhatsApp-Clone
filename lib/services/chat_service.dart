@@ -155,6 +155,38 @@ class ChatService {
     }
   }
 
+  Future<void> sendVoiceMessages({
+    required String receiverId,
+    required List<String> voiceMessagesUrl,
+    required List<String> voiceMessageNames,
+  }) async {
+    final String currentUserId = _auth.currentUser!.uid;
+    final String currentUserPhoneNumber = _auth.currentUser!.phoneNumber!;
+    final Timestamp timestamp = Timestamp.now();
+
+    for (String voiceMessageUrl in voiceMessagesUrl) {
+      FileMessage newVoiceMessage = FileMessage(
+        senderId: currentUserId,
+        senderPhoneNumber: currentUserPhoneNumber,
+        receiverId: receiverId,
+        fileUrl: voiceMessageUrl,
+        fileName: voiceMessageNames[voiceMessagesUrl.indexOf(voiceMessageUrl)],
+        timestamp: timestamp,
+        type: 'voice',
+      );
+
+      List<String> ids = [currentUserId, receiverId];
+      ids.sort();
+      String chatId = ids.join('_');
+
+      await _firestore
+          .collection('chats')
+          .doc(chatId)
+          .collection('messages')
+          .add(newVoiceMessage.toMap());
+    }
+  }
+
   Stream<QuerySnapshot> getMessages(String userId, String otherUserId) {
     List<String> ids = [userId, otherUserId];
     ids.sort();
