@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/services.dart';
@@ -39,7 +40,8 @@ class StorageService {
     return fileUrls;
   }
 
-  Future<List<String>> uploadFiles(String receiverId, List<File> files, List<String> fileNames) async {
+  Future<List<String>> uploadFiles(
+      String receiverId, List<File> files, List<String> fileNames) async {
     final String currentUserId = _auth.currentUser!.uid;
 
     List<String> ids = [currentUserId, receiverId];
@@ -66,5 +68,29 @@ class StorageService {
     }
 
     return fileUrls;
+  }
+
+  Future<bool> uploadProfilePicture(File file) async {
+    final String currentUserId = _auth.currentUser!.uid;
+
+    try {
+      final Reference ref =
+          _storage.ref().child('profile_pictures/$currentUserId.jpg');
+      final UploadTask uploadTask = ref.putFile(file);
+
+      await uploadTask.whenComplete(() async {
+        final String fileUrl = await ref.getDownloadURL();
+      await  FirebaseFirestore.instance
+            .collection('users')
+            .doc(currentUserId)
+            .update({'profilePic': fileUrl});
+
+        return true;
+      });
+    } on PlatformException catch (e) {
+      logger.e('Failed to upload file: $e');
+    }
+
+    return false;
   }
 }

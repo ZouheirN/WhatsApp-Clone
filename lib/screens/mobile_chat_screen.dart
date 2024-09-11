@@ -162,52 +162,65 @@ class _MobileChatScreenState extends State<MobileChatScreen> {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: appBarColor,
-        title: Row(
-          children: [
-            CircleAvatar(
-              radius: 20,
-              backgroundImage: NetworkImage(widget.receiverProfilePic),
-            ),
-            const Gap(10),
-            ValueListenableBuilder(
-                valueListenable: ContactsBox.watchContact(widget.receiverId),
-                builder: (context, value, child) {
-                  return Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        ContactsBox.getContactName(widget.receiverId) ??
-                            widget.receiverPhoneNumber,
-                        style: const TextStyle(
-                          fontSize: 16,
+        title: InkWell(
+          onTap: () {
+            Navigator.of(context).push(
+              MaterialPageRoute(
+                builder: (context) => ViewContactScreen(
+                  contactId: widget.receiverId,
+                  contactPhoneNumber: widget.receiverPhoneNumber,
+                  contactProfilePic: widget.receiverProfilePic,
+                ),
+              ),
+            );
+          },
+          child: Row(
+            children: [
+              CircleAvatar(
+                radius: 20,
+                backgroundImage: NetworkImage(widget.receiverProfilePic),
+              ),
+              const Gap(10),
+              ValueListenableBuilder(
+                  valueListenable: ContactsBox.watchContact(widget.receiverId),
+                  builder: (context, value, child) {
+                    return Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          ContactsBox.getContactName(widget.receiverId) ??
+                              widget.receiverPhoneNumber,
+                          style: const TextStyle(
+                            fontSize: 16,
+                          ),
                         ),
-                      ),
-                      StreamBuilder(
-                        stream: _chatService.isUserOnline(widget.receiverId),
-                        builder: (context, snapshot) {
-                          if (snapshot.connectionState ==
-                              ConnectionState.active) {
-                            bool? isOnline = snapshot.data;
-                            isOnline ??= false;
+                        StreamBuilder(
+                          stream: _chatService.isUserOnline(widget.receiverId),
+                          builder: (context, snapshot) {
+                            if (snapshot.connectionState ==
+                                ConnectionState.active) {
+                              bool? isOnline = snapshot.data;
+                              isOnline ??= false;
 
-                            if (isOnline) {
-                              return Text(
-                                AppLocalizations.of(context)!.online,
-                                style: const TextStyle(
-                                  fontSize: 12,
-                                  color: Colors.grey,
-                                ),
-                              );
+                              if (isOnline) {
+                                return Text(
+                                  AppLocalizations.of(context)!.online,
+                                  style: const TextStyle(
+                                    fontSize: 12,
+                                    color: Colors.grey,
+                                  ),
+                                );
+                              }
                             }
-                          }
 
-                          return const SizedBox();
-                        },
-                      ),
-                    ],
-                  );
-                }),
-          ],
+                            return const SizedBox();
+                          },
+                        ),
+                      ],
+                    );
+                  }),
+            ],
+          ),
         ),
         centerTitle: false,
         actions: [
