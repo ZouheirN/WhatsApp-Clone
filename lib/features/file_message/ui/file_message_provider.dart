@@ -70,6 +70,7 @@ class FileMessageProvider extends StatelessWidget {
                 time: time,
               );
       case 'video':
+        return Text('video');
         return isCurrentUser
             ? MyVideoMessageCard(
                 videoUrl: fileUrl,

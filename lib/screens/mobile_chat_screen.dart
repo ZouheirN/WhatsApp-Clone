@@ -11,7 +11,9 @@ import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:whatsapp_clone/colors.dart';
 import 'package:whatsapp_clone/screens/camera_screen.dart';
+import 'package:whatsapp_clone/screens/view_contact_screen.dart';
 import 'package:whatsapp_clone/services/chat_service.dart';
+import 'package:whatsapp_clone/utils/contacts_box.dart';
 import 'package:whatsapp_clone/utils/format_time.dart';
 
 import '../services/storage_service.dart';
@@ -167,45 +169,94 @@ class _MobileChatScreenState extends State<MobileChatScreen> {
               backgroundImage: NetworkImage(widget.receiverProfilePic),
             ),
             const Gap(10),
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  widget.receiverPhoneNumber,
-                  style: const TextStyle(
-                    fontSize: 16,
-                  ),
-                ),
-                StreamBuilder(
-                  stream: _chatService.isUserOnline(widget.receiverId),
-                  builder: (context, snapshot) {
-                    if (snapshot.connectionState == ConnectionState.active) {
-                      bool? isOnline = snapshot.data;
-                      isOnline ??= false;
+            ValueListenableBuilder(
+                valueListenable: ContactsBox.watchContact(widget.receiverId),
+                builder: (context, value, child) {
+                  return Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        ContactsBox.getContactName(widget.receiverId) ??
+                            widget.receiverPhoneNumber,
+                        style: const TextStyle(
+                          fontSize: 16,
+                        ),
+                      ),
+                      StreamBuilder(
+                        stream: _chatService.isUserOnline(widget.receiverId),
+                        builder: (context, snapshot) {
+                          if (snapshot.connectionState ==
+                              ConnectionState.active) {
+                            bool? isOnline = snapshot.data;
+                            isOnline ??= false;
 
-                      if (isOnline) {
-                        return Text(
-                          AppLocalizations.of(context)!.online,
-                          style: const TextStyle(
-                            fontSize: 12,
-                            color: Colors.grey,
-                          ),
-                        );
-                      }
-                    }
+                            if (isOnline) {
+                              return Text(
+                                AppLocalizations.of(context)!.online,
+                                style: const TextStyle(
+                                  fontSize: 12,
+                                  color: Colors.grey,
+                                ),
+                              );
+                            }
+                          }
 
-                    return const SizedBox();
-                  },
-                ),
-              ],
-            ),
+                          return const SizedBox();
+                        },
+                      ),
+                    ],
+                  );
+                }),
           ],
         ),
         centerTitle: false,
         actions: [
           IconButton(onPressed: () {}, icon: const Icon(Icons.videocam)),
           IconButton(onPressed: () {}, icon: const Icon(Icons.call)),
-          IconButton(onPressed: () {}, icon: const Icon(Icons.more_vert)),
+          PopupMenuButton(
+            icon: const Icon(Icons.more_vert),
+            itemBuilder: (context) {
+              return [
+                const PopupMenuItem(
+                  value: 1,
+                  child: Text('View Contact'),
+                ),
+                const PopupMenuItem(
+                  value: 2,
+                  child: Text('Media, links, and docs'),
+                ),
+                const PopupMenuItem(
+                  value: 3,
+                  child: Text('Search'),
+                ),
+                const PopupMenuItem(
+                  value: 4,
+                  child: Text('Mute notifications'),
+                ),
+              ];
+            },
+            onSelected: (value) {
+              switch (value) {
+                case 1:
+                  Navigator.of(context).push(
+                    MaterialPageRoute(
+                      builder: (context) => ViewContactScreen(
+                        contactId: widget.receiverId,
+                        contactPhoneNumber: widget.receiverPhoneNumber,
+                        contactProfilePic: widget.receiverProfilePic,
+                      ),
+                    ),
+                  );
+                  break;
+                case 2:
+                  break;
+                case 3:
+                  break;
+                case 4:
+                  break;
+              }
+            },
+          ),
         ],
       ),
       body: Column(

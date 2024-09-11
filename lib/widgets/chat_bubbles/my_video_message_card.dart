@@ -2,7 +2,6 @@ import 'package:cached_video_player_plus/cached_video_player_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 import 'package:whatsapp_clone/colors.dart';
-import 'package:whatsapp_clone/main.dart';
 
 class MyVideoMessageCard extends StatefulWidget {
   final String videoUrl;
@@ -72,11 +71,13 @@ class _MyVideoMessageCardState extends State<MyVideoMessageCard> {
                               child: AspectRatio(
                                 aspectRatio:
                                     _videoPlayerController.value.aspectRatio,
-                                child:
-                                    CachedVideoPlayerPlus(_videoPlayerController),
+                                child: CachedVideoPlayerPlus(
+                                    _videoPlayerController),
                               ),
                             )
-                          : Container(),
+                          : Center(
+                              child: CircularProgressIndicator(),
+                            ),
                     ),
                     if (!_videoPlayerController.value.isInitialized)
                       Align(
@@ -140,39 +141,39 @@ class _MyVideoMessageCardState extends State<MyVideoMessageCard> {
               ),
               if (_videoPlayerController.value.isInitialized)
                 Positioned(
-                top: 0,
-                bottom: 0,
-                left: 0,
-                right: 0,
-                child: Align(
-                  alignment: Alignment.center,
-                  child: ValueListenableBuilder(
-                    valueListenable: _videoPlayerController,
-                    builder: (context, value, child) => IconButton(
-                      onPressed: () {
-                        setState(() {
-                          if (_videoPlayerController.value.isPlaying) {
-                            _videoPlayerController.pause();
-                          } else {
-                            _videoPlayerController.play();
-                          }
-                        });
-                      },
-                      icon: CircleAvatar(
-                        radius: 30,
-                        backgroundColor: Colors.black.withOpacity(0.5),
-                        child: Icon(
-                          _videoPlayerController.value.isPlaying
-                              ? Icons.pause
-                              : Icons.play_arrow,
-                          color: Colors.white,
-                          size: 50,
+                  top: 0,
+                  bottom: 0,
+                  left: 0,
+                  right: 0,
+                  child: Align(
+                    alignment: Alignment.center,
+                    child: ValueListenableBuilder(
+                      valueListenable: _videoPlayerController,
+                      builder: (context, value, child) => IconButton(
+                        onPressed: () {
+                          setState(() {
+                            if (_videoPlayerController.value.isPlaying) {
+                              _videoPlayerController.pause();
+                            } else {
+                              _videoPlayerController.play();
+                            }
+                          });
+                        },
+                        icon: CircleAvatar(
+                          radius: 30,
+                          backgroundColor: Colors.black.withOpacity(0.5),
+                          child: Icon(
+                            _videoPlayerController.value.isPlaying
+                                ? Icons.pause
+                                : Icons.play_arrow,
+                            color: Colors.white,
+                            size: 50,
+                          ),
                         ),
                       ),
                     ),
                   ),
-                ),
-              )
+                )
             ],
           ),
         ),

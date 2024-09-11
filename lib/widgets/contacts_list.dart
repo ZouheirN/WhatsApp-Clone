@@ -4,6 +4,7 @@ import 'package:gap/gap.dart';
 import 'package:whatsapp_clone/colors.dart';
 import 'package:whatsapp_clone/screens/mobile_chat_screen.dart';
 import 'package:whatsapp_clone/services/chat_service.dart';
+import 'package:whatsapp_clone/utils/contacts_box.dart';
 import 'package:whatsapp_clone/utils/utilities_box.dart';
 
 class ContactsList extends StatelessWidget {
@@ -148,83 +149,90 @@ class ContactsList extends StatelessWidget {
             latestMessage['senderId'] != _auth.currentUser!.uid &&
                 !latestMessage['isRead'];
 
-        return ListTile(
-          leading: CircleAvatar(
-            radius: 30,
-            backgroundImage: NetworkImage(userData['profilePic'].toString()),
-          ),
-          title: Text(
-            userData['phone'].toString(),
-            style: const TextStyle(
-              fontSize: 18,
-            ),
-          ),
-          subtitle: Padding(
-            padding: const EdgeInsets.only(top: 6.0),
-            child: Row(
-              children: [
-                if (latestMessage['type'] == 'file')
-                  const Icon(Icons.description)
-                else if (latestMessage['type'] == 'image')
-                  const Icon(Icons.image)
-                else if (latestMessage['type'] == 'video')
-                  const Icon(Icons.videocam)
-                else if (latestMessage['type'] == 'voice')
-                  const Icon(Icons.mic),
-                Flexible(
-                  fit: FlexFit.loose,
-                  child: Text(
-                    message,
-                    style: const TextStyle(
-                      fontSize: 15,
-                    ),
-                    overflow: TextOverflow.ellipsis,
-                  ),
-                ),
-              ],
-            ),
-          ),
-          trailing: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Flexible(
-                fit: FlexFit.loose,
-                child: Text(
-                  parsedTime,
-                  style: const TextStyle(
-                    fontSize: 13,
-                    color: Colors.grey,
-                  ),
-                  overflow: TextOverflow.ellipsis,
+        return ValueListenableBuilder(
+          valueListenable: ContactsBox.watchContact(userData['uid']),
+          builder: (context, value, child) {
+            return ListTile(
+              leading: CircleAvatar(
+                radius: 30,
+                backgroundImage:
+                    NetworkImage(userData['profilePic'].toString()),
+              ),
+              title: Text(
+                ContactsBox.getContactName(userData['uid']) ??
+                    userData['phone'].toString(),
+                style: const TextStyle(
+                  fontSize: 18,
                 ),
               ),
-              if (isNewMessage)
-                const Column(
+              subtitle: Padding(
+                padding: const EdgeInsets.only(top: 6.0),
+                child: Row(
                   children: [
-                    Gap(5),
-                    CircleAvatar(
-                      radius: 12,
-                      backgroundColor: Colors.green,
-                    )
+                    if (latestMessage['type'] == 'file')
+                      const Icon(Icons.description)
+                    else if (latestMessage['type'] == 'image')
+                      const Icon(Icons.image)
+                    else if (latestMessage['type'] == 'video')
+                      const Icon(Icons.videocam)
+                    else if (latestMessage['type'] == 'voice')
+                      const Icon(Icons.mic),
+                    Flexible(
+                      fit: FlexFit.loose,
+                      child: Text(
+                        message,
+                        style: const TextStyle(
+                          fontSize: 15,
+                        ),
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                    ),
                   ],
-                )
-              else
-                const Gap(10),
-              if (_auth.currentUser!.uid == latestMessage['senderId'])
-                if (latestMessage['isRead'])
-                  const Icon(
-                    Icons.done_all,
-                    color: Colors.grey,
-                    size: 20,
-                  )
-                else
-                  const Icon(
-                    Icons.done,
-                    color: Colors.grey,
-                    size: 20,
+                ),
+              ),
+              trailing: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Flexible(
+                    fit: FlexFit.loose,
+                    child: Text(
+                      parsedTime,
+                      style: const TextStyle(
+                        fontSize: 13,
+                        color: Colors.grey,
+                      ),
+                      overflow: TextOverflow.ellipsis,
+                    ),
                   ),
-            ],
-          ),
+                  if (isNewMessage)
+                    const Column(
+                      children: [
+                        Gap(5),
+                        CircleAvatar(
+                          radius: 12,
+                          backgroundColor: Colors.green,
+                        )
+                      ],
+                    )
+                  else
+                    const Gap(10),
+                  if (_auth.currentUser!.uid == latestMessage['senderId'])
+                    if (latestMessage['isRead'])
+                      const Icon(
+                        Icons.done_all,
+                        color: Colors.grey,
+                        size: 20,
+                      )
+                    else
+                      const Icon(
+                        Icons.done,
+                        color: Colors.grey,
+                        size: 20,
+                      ),
+                ],
+              ),
+            );
+          },
         );
       },
     );

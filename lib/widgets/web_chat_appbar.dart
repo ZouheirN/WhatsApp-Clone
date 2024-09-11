@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:whatsapp_clone/colors.dart';
 import 'package:whatsapp_clone/services/chat_service.dart';
+import 'package:whatsapp_clone/utils/contacts_box.dart';
 
 class WebChatAppbar extends StatefulWidget {
   final String selectedUserId;
@@ -35,40 +36,45 @@ class _WebChatAppbarState extends State<WebChatAppbar> {
             backgroundImage: NetworkImage(widget.selectedUserProfilePic),
             radius: 30,
           ),
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                widget.selectedUserPhoneNumber,
-                style: const TextStyle(
-                  fontSize: 14,
-                  color: Colors.white,
-                ),
-              ),
-              StreamBuilder(
-                stream: _chatService.isUserOnline(widget.selectedUserId),
-                builder: (context, snapshot) {
-                  if (snapshot.connectionState == ConnectionState.active) {
-                    final bool isOnline = snapshot.data as bool;
+          ValueListenableBuilder(
+            valueListenable: ContactsBox.watchContact(widget.selectedUserId),
+            builder: (context, value, child) {
+              return Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    widget.selectedUserPhoneNumber,
+                    style: const TextStyle(
+                      fontSize: 14,
+                      color: Colors.white,
+                    ),
+                  ),
+                  StreamBuilder(
+                    stream: _chatService.isUserOnline(widget.selectedUserId),
+                    builder: (context, snapshot) {
+                      if (snapshot.connectionState == ConnectionState.active) {
+                        final bool isOnline = snapshot.data as bool;
 
-                    if (isOnline) {
-                      return Flexible(
-                        fit: FlexFit.loose,
-                        child: Text(
-                          AppLocalizations.of(context)!.online,
-                          style: const TextStyle(
-                            fontSize: 12,
-                            color: Colors.grey,
-                          ),
-                        ),
-                      );
-                    }
-                  }
+                        if (isOnline) {
+                          return Flexible(
+                            fit: FlexFit.loose,
+                            child: Text(
+                              AppLocalizations.of(context)!.online,
+                              style: const TextStyle(
+                                fontSize: 12,
+                                color: Colors.grey,
+                              ),
+                            ),
+                          );
+                        }
+                      }
 
-                  return const SizedBox();
-                },
-              ),
-            ],
+                      return const SizedBox();
+                    },
+                  ),
+                ],
+              );
+            }
           ),
           const Spacer(),
           IconButton(

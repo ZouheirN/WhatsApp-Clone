@@ -32,6 +32,7 @@ Future<void> main() async {
     },
   );
   await Hive.openBox('downloadedFiles');
+  await Hive.openBox('contacts');
 
   try {
     cameras = await availableCameras();
