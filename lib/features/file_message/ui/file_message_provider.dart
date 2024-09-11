@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:whatsapp_clone/widgets/chat_bubbles/my_image_message_card.dart';
+import 'package:whatsapp_clone/widgets/chat_bubbles/my_video_message_card.dart';
 import 'package:whatsapp_clone/widgets/chat_bubbles/my_voice_message.dart';
 import 'package:whatsapp_clone/widgets/chat_bubbles/sender_image_message_card.dart';
 import 'package:whatsapp_clone/widgets/chat_bubbles/sender_voice_message.dart';
@@ -69,7 +70,17 @@ class FileMessageProvider extends StatelessWidget {
                 time: time,
               );
       case 'video':
-        return const SizedBox();
+        return isCurrentUser
+            ? MyVideoMessageCard(
+                videoUrl: fileUrl,
+                time: time,
+                isRead: isRead,
+              )
+            : MyVideoMessageCard(
+                videoUrl: fileUrl,
+                time: time,
+                isRead: isRead,
+              );
       case 'voice':
         return isCurrentUser
             ? MyVoiceMessage(

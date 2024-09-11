@@ -1,10 +1,10 @@
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:whatsapp_clone/colors.dart';
 import 'package:whatsapp_clone/main.dart';
 import 'package:whatsapp_clone/screens/camera_image_view.dart';
 import 'package:whatsapp_clone/screens/camera_video_view.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class CameraScreen extends StatefulWidget {
   final String receiverId;
@@ -134,6 +134,7 @@ class _CameraScreenState extends State<CameraScreen> {
                                   MaterialPageRoute(
                                     builder: (context) => CameraVideoViewScreen(
                                       video: video,
+                                      receiverId: widget.receiverId,
                                     ),
                                   ),
                                 );

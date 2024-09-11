@@ -33,6 +33,7 @@ class _MyVoiceMessageState extends State<MyVoiceMessage> {
 
     audioPlayer.onPlayerStateChanged.listen(
       (event) {
+        if (!mounted) return;
         setState(() {
           isPlaying = event == PlayerState.playing;
         });
@@ -40,12 +41,14 @@ class _MyVoiceMessageState extends State<MyVoiceMessage> {
     );
 
     audioPlayer.onDurationChanged.listen((event) {
+      if (!mounted) return;
       setState(() {
         duration = event;
       });
     });
 
     audioPlayer.onPositionChanged.listen((event) {
+      if (!mounted) return;
       setState(() {
         position = event;
       });

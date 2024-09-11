@@ -180,7 +180,8 @@ class _MobileChatScreenState extends State<MobileChatScreen> {
                   stream: _chatService.isUserOnline(widget.receiverId),
                   builder: (context, snapshot) {
                     if (snapshot.connectionState == ConnectionState.active) {
-                      final bool isOnline = snapshot.data as bool;
+                      bool? isOnline = snapshot.data;
+                      isOnline ??= false;
 
                       if (isOnline) {
                         return Text(
@@ -249,7 +250,8 @@ class _MobileChatScreenState extends State<MobileChatScreen> {
                                             color: Colors.red,
                                           ),
                                         ),
-                                        hintText: formatTime(recordingDurationValue),
+                                        hintText:
+                                            formatTime(recordingDurationValue),
                                         border: OutlineInputBorder(
                                           borderRadius:
                                               BorderRadius.circular(20),

@@ -138,7 +138,15 @@ class ContactsList extends StatelessWidget {
           } else {
             message = 'Image';
           }
+        } else if (latestMessage['type'] == 'video') {
+          message = 'Video';
+        } else if (latestMessage['type'] == 'voice') {
+          message = 'Voice Message';
         }
+
+        final isNewMessage =
+            latestMessage['senderId'] != _auth.currentUser!.uid &&
+                !latestMessage['isRead'];
 
         return ListTile(
           leading: CircleAvatar(
@@ -160,7 +168,9 @@ class ContactsList extends StatelessWidget {
                 else if (latestMessage['type'] == 'image')
                   const Icon(Icons.image)
                 else if (latestMessage['type'] == 'video')
-                  const Icon(Icons.videocam),
+                  const Icon(Icons.videocam)
+                else if (latestMessage['type'] == 'voice')
+                  const Icon(Icons.mic),
                 Flexible(
                   fit: FlexFit.loose,
                   child: Text(
@@ -188,7 +198,18 @@ class ContactsList extends StatelessWidget {
                   overflow: TextOverflow.ellipsis,
                 ),
               ),
-              const Gap(10),
+              if (isNewMessage)
+                const Column(
+                  children: [
+                    Gap(5),
+                    CircleAvatar(
+                      radius: 12,
+                      backgroundColor: Colors.green,
+                    )
+                  ],
+                )
+              else
+                const Gap(10),
               if (_auth.currentUser!.uid == latestMessage['senderId'])
                 if (latestMessage['isRead'])
                   const Icon(

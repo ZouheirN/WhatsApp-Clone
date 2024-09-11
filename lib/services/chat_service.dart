@@ -125,7 +125,7 @@ class ChatService {
     required String receiverId,
     required List<String> videosUrl,
     required List<String> videoNames,
-    required List<String> captions,
+    required List<String?> captions,
   }) async {
     final String currentUserId = _auth.currentUser!.uid;
     final String currentUserPhoneNumber = _auth.currentUser!.phoneNumber!;

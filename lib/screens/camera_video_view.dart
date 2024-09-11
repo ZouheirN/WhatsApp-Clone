@@ -1,14 +1,18 @@
 import 'dart:io';
 
 import 'package:camera/camera.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:video_player/video_player.dart';
 import 'package:whatsapp_clone/colors.dart';
+import 'package:whatsapp_clone/services/chat_service.dart';
+import 'package:whatsapp_clone/services/storage_service.dart';
 
 class CameraVideoViewScreen extends StatefulWidget {
   final XFile video;
+  final String receiverId;
 
-  const CameraVideoViewScreen({super.key, required this.video});
+  const CameraVideoViewScreen({super.key, required this.video, required this.receiverId});
 
   @override
   State<CameraVideoViewScreen> createState() => _CameraVideoViewScreenState();
@@ -16,6 +20,50 @@ class CameraVideoViewScreen extends StatefulWidget {
 
 class _CameraVideoViewScreenState extends State<CameraVideoViewScreen> {
   late VideoPlayerController _videoPlayerController;
+
+  final TextEditingController _captionController = TextEditingController();
+
+  final ValueNotifier<bool> isUploading = ValueNotifier(false);
+
+  final StorageService _storageService = StorageService();
+  final ChatService _chatService = ChatService();
+
+  Future<void> _uploadVideo() async {
+    isUploading.value = true;
+    final caption = _captionController.text.trim().isEmpty
+        ? null
+        : _captionController.text.trim();
+
+    if (kIsWeb) {
+      final urls = await _storageService.uploadFilesWeb(
+        widget.receiverId,
+        [File(widget.video.path).readAsBytesSync()],
+        [widget.video.name],
+      );
+
+      _chatService.sendVideos(
+        receiverId: widget.receiverId,
+        videosUrl: urls,
+        videoNames: [widget.video.name],
+        captions: [caption],
+      );
+    } else {
+      final urls = await _storageService.uploadFiles(
+        widget.receiverId,
+        [File(widget.video.path)],
+        [widget.video.name],
+      );
+
+      _chatService.sendVideos(
+        receiverId: widget.receiverId,
+        videosUrl: urls,
+        videoNames: [widget.video.name],
+        captions: [caption],
+      );
+    }
+
+    isUploading.value = false;
+  }
 
   @override
   void initState() {
@@ -65,39 +113,51 @@ class _CameraVideoViewScreenState extends State<CameraVideoViewScreen> {
                 padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 8),
                 child: Row(
                   children: [
-                    const Icon(
-                      Icons.add_photo_alternate,
-                      color: textColor,
-                      size: 28,
-                    ),
-                    const Expanded(
+                    Expanded(
                       child: TextField(
+                        controller: _captionController,
                         maxLines: 6,
                         minLines: 1,
-                        decoration: InputDecoration(
+                        decoration: const InputDecoration(
                           hintText: 'Add a caption...',
                           hintStyle: TextStyle(
                             color: textColor,
                           ),
                           border: InputBorder.none,
                         ),
-                        style: TextStyle(
+                        style: const TextStyle(
                           color: textColor,
                         ),
                       ),
                     ),
-                    CircleAvatar(
-                      radius: 25,
-                      backgroundColor: tabColor,
-                      child: IconButton(
-                        onPressed: () {},
-                        icon: const Icon(
-                          Icons.send,
-                          color: Colors.white,
-                          size: 28,
-                        ),
-                      ),
-                    )
+                    ValueListenableBuilder(
+                        valueListenable: isUploading,
+                        builder: (context, value, child) {
+                          return CircleAvatar(
+                            radius: 25,
+                            backgroundColor: tabColor,
+                            child: IconButton(
+                              onPressed: () async {
+                                if (value) return;
+
+                                await _uploadVideo();
+
+                                if (!context.mounted) return;
+                                Navigator.pop(context);
+                                Navigator.pop(context);
+                              },
+                              icon: value
+                                  ? const CircularProgressIndicator(
+                                      color: Colors.white,
+                                    )
+                                  : const Icon(
+                                      Icons.send,
+                                      color: Colors.white,
+                                      size: 28,
+                                    ),
+                            ),
+                          );
+                        })
                   ],
                 ),
               ),
