@@ -25,9 +25,13 @@ class _MyVoiceMessageState extends State<MyVoiceMessage> {
   bool isPlaying = false;
   Duration duration = const Duration();
   Duration position = const Duration();
+  List<double> speeds = [1.0, 1.5, 2.0];
+  late double selectedSpeed;
 
   @override
   void initState() {
+    selectedSpeed = speeds.first;
+
     audioPlayer.setReleaseMode(ReleaseMode.stop);
     audioPlayer.setSource(UrlSource(widget.voiceUrl));
 
@@ -82,7 +86,7 @@ class _MyVoiceMessageState extends State<MyVoiceMessage> {
             children: [
               Padding(
                 padding: const EdgeInsets.only(
-                    left: 10, right: 30, top: 5, bottom: 20),
+                    left: 10, right: 20, top: 5, bottom: 20),
                 child: Column(
                   children: [
                     Row(
@@ -116,6 +120,34 @@ class _MyVoiceMessageState extends State<MyVoiceMessage> {
                             await audioPlayer.seek(position);
                           },
                         ),
+                        Expanded(
+                          child: GestureDetector(
+                            onTap: () {
+                              final index = speeds.indexOf(selectedSpeed);
+                              if (index == speeds.length - 1) {
+                                selectedSpeed = speeds.first;
+                              } else {
+                                selectedSpeed = speeds[index + 1];
+                              }
+                              audioPlayer.setPlaybackRate(selectedSpeed);
+                              setState(() {});
+                            },
+                            child: Container(
+                              decoration: BoxDecoration(
+                                color: dividerColor.withOpacity(0.5),
+                                borderRadius: BorderRadius.circular(20),
+                              ),
+                              child: Text(
+                                '${selectedSpeed % 1 == 0 ? selectedSpeed.toStringAsFixed(0) : selectedSpeed.toString()}x',
+                                style: const TextStyle(
+                                  fontSize: 13,
+                                  color: textColor,
+                                ),
+                                textAlign: TextAlign.center,
+                              ),
+                            ),
+                          ),
+                        )
                       ],
                     ),
                     Text(
@@ -124,7 +156,6 @@ class _MyVoiceMessageState extends State<MyVoiceMessage> {
                         fontSize: 13,
                         color: textColor,
                       ),
-                      textAlign: TextAlign.start,
                     ),
                   ],
                 ),
