@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:whatsapp_clone/colors.dart';
+import 'package:whatsapp_clone/screens/create_group_screen.dart';
 import 'package:whatsapp_clone/screens/mobile_settings_screen.dart';
 
 import '../widgets/contacts_list.dart';
@@ -29,12 +30,28 @@ class MobileScreenLayout extends StatelessWidget {
               onPressed: () {},
               icon: const Icon(Icons.search, color: Colors.grey),
             ),
-            IconButton(
-              onPressed: () {
-                Navigator.of(context).push(MaterialPageRoute(
-                    builder: (context) => MobileSettingsScreen()));
+            PopupMenuButton(
+              itemBuilder: (context) {
+                return [
+                  const PopupMenuItem(
+                    child: Text('New group'),
+                    value: 1,
+                  ),
+                  const PopupMenuItem(
+                    child: Text('Settings'),
+                    value: 2,
+                  ),
+                ];
               },
-              icon: const Icon(Icons.more_vert, color: Colors.grey),
+              onSelected: (int value) {
+                if (value == 1) {
+                  Navigator.of(context).push(MaterialPageRoute(
+                      builder: (context) => const CreateGroupScreen()));
+                } else if (value == 2) {
+                  Navigator.of(context).push(MaterialPageRoute(
+                      builder: (context) => const MobileSettingsScreen()));
+                }
+              },
             ),
           ],
           bottom: const TabBar(

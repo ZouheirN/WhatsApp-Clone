@@ -25,4 +25,9 @@ class ContactsBox {
   static ValueListenable watchContact(String userId) {
     return _contactsBox.listenable(keys: [userId]);
   }
+
+  static Map getAllContacts() {
+    final contacts = _contactsBox.toMap();
+    return contacts;
+  }
 }

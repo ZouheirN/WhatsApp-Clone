@@ -4,6 +4,7 @@ import 'package:gap/gap.dart';
 import 'package:whatsapp_clone/colors.dart';
 import 'package:whatsapp_clone/screens/mobile_chat_screen.dart';
 import 'package:whatsapp_clone/services/chat_service.dart';
+import 'package:whatsapp_clone/services/group_chat_service.dart';
 import 'package:whatsapp_clone/utils/contacts_box.dart';
 import 'package:whatsapp_clone/utils/utilities_box.dart';
 
@@ -11,6 +12,7 @@ class ContactsList extends StatelessWidget {
   ContactsList({super.key});
 
   final ChatService _chatService = ChatService();
+  final GroupChatService _groupChatService = GroupChatService();
   final FirebaseAuth _auth = FirebaseAuth.instance;
 
   @override
@@ -18,29 +20,99 @@ class ContactsList extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.only(top: 10),
       child: StreamBuilder(
-        stream: _chatService.getUsersStream(),
-        builder: (context, snapshot) {
-          if (snapshot.hasError) {
-            return const Center(
-              child: Text('Something went wrong!'),
-            );
-          }
+          stream: _groupChatService.getGroupChatsStream(),
+          builder: (context, groupSnapshot) {
+            if (groupSnapshot.hasError) {
+              return const Center(
+                child: Text('Something went wrong!'),
+              );
+            }
 
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            return const Center(
-              child: CircularProgressIndicator(),
-            );
-          }
+            if (groupSnapshot.connectionState == ConnectionState.waiting) {
+              return const Center(
+                child: CircularProgressIndicator(),
+              );
+            }
 
-          return ListView(
-            shrinkWrap: true,
-            padding: const EdgeInsets.only(bottom: 8),
-            children: snapshot.data!
-                .map<Widget>((userData) => _buildListItem(userData, context))
-                .toList(),
-          );
-        },
-      ),
+            final groups = ListView(
+              shrinkWrap: true,
+              padding: const EdgeInsets.only(bottom: 8),
+              children: groupSnapshot.data!
+                  .map<Widget>((groupData) => _buildGroupListItem(groupData))
+                  .toList(),
+            );
+
+            return StreamBuilder(
+              stream: _chatService.getUsersStream(),
+              builder: (context, snapshot) {
+                if (snapshot.hasError) {
+                  return const Center(
+                    child: Text('Something went wrong!'),
+                  );
+                }
+
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return const Center(
+                    child: CircularProgressIndicator(),
+                  );
+                }
+
+                return Column(
+                  children: [
+                    ListView(
+                      shrinkWrap: true,
+                      padding: const EdgeInsets.only(bottom: 8),
+                      children: snapshot.data!
+                          .map<Widget>(
+                              (userData) => _buildListItem(userData, context))
+                          .toList(),
+                    ),
+                    groups,
+                  ],
+                );
+              },
+            );
+          }),
+    );
+  }
+
+  Widget _buildGroupListItem(Map<String, dynamic> groupData) {
+    return Column(
+      children: [
+        ListTile(
+          leading: CircleAvatar(
+            radius: 30,
+            backgroundImage:
+                NetworkImage(groupData['groupImageUrl'].toString()),
+          ),
+          title: Text(
+            groupData['groupName'].toString(),
+            style: const TextStyle(
+              fontSize: 18,
+            ),
+          ),
+          subtitle: const Padding(
+            padding: EdgeInsets.only(top: 6.0),
+            child: Text(
+              '',
+              style: TextStyle(
+                fontSize: 15,
+              ),
+            ),
+          ),
+          trailing: const Text(
+            '',
+            style: TextStyle(
+              fontSize: 13,
+              color: Colors.grey,
+            ),
+          ),
+        ),
+        const Divider(
+          color: dividerColor,
+          indent: 85,
+        ),
+      ],
     );
   }
 

@@ -93,4 +93,20 @@ class StorageService {
 
     return false;
   }
+
+  Future<String?> uploadGroupProfilePicture(String groupId, File file) async {
+    try {
+      final Reference ref = _storage.ref().child('group_chat_pictures/$groupId.jpg');
+      final UploadTask uploadTask = ref.putFile(file);
+
+      await uploadTask.whenComplete(() async {
+        final String fileUrl = await ref.getDownloadURL();
+        return fileUrl;
+      });
+    } on PlatformException catch (e) {
+      logger.e('Failed to upload file: $e');
+    }
+
+    return null;
+  }
 }
