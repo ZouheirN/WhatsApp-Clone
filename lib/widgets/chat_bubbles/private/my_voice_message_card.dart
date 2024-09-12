@@ -4,12 +4,12 @@ import 'package:gap/gap.dart';
 import 'package:whatsapp_clone/colors.dart';
 import 'package:whatsapp_clone/utils/format_time.dart';
 
-class MyVoiceMessage extends StatefulWidget {
+class MyVoiceMessageCard extends StatefulWidget {
   final String voiceUrl;
   final String time;
   final bool isRead;
 
-  const MyVoiceMessage({
+  const MyVoiceMessageCard({
     super.key,
     required this.voiceUrl,
     required this.time,
@@ -17,10 +17,10 @@ class MyVoiceMessage extends StatefulWidget {
   });
 
   @override
-  State<MyVoiceMessage> createState() => _MyVoiceMessageState();
+  State<MyVoiceMessageCard> createState() => _MyVoiceMessageCardState();
 }
 
-class _MyVoiceMessageState extends State<MyVoiceMessage> {
+class _MyVoiceMessageCardState extends State<MyVoiceMessageCard> {
   final AudioPlayer audioPlayer = AudioPlayer();
   bool isPlaying = false;
   Duration duration = const Duration();

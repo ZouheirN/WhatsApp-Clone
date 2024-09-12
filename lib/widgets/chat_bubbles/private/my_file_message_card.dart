@@ -3,34 +3,37 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:gap/gap.dart';
 import 'package:whatsapp_clone/colors.dart';
 
-import '../../features/file_message/cubit/file_message_cubit.dart';
+import '../../../features/file_message/cubit/file_message_cubit.dart';
 
-class SenderFileMessageCard extends StatelessWidget {
+class MyFileMessageCard extends StatelessWidget {
   final String fileUrl;
   final String fileName;
   final String time;
+  final bool isRead;
 
-  const SenderFileMessageCard({
+  const MyFileMessageCard({
     super.key,
     required this.fileUrl,
     required this.time,
+    required this.isRead,
     required this.fileName,
   });
 
   @override
   Widget build(BuildContext context) {
     return Align(
-      alignment: Alignment.centerLeft,
+      alignment: Alignment.centerRight,
       child: ConstrainedBox(
         constraints: BoxConstraints(
           maxWidth: MediaQuery.of(context).size.width - 45,
+          minWidth: 120,
         ),
         child: Card(
           elevation: 1,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(8),
           ),
-          color: senderMessageColor,
+          color: messageColor,
           margin: const EdgeInsets.symmetric(horizontal: 15, vertical: 5),
           child: Stack(
             children: [
@@ -108,7 +111,7 @@ class SenderFileMessageCard extends StatelessWidget {
                 ),
               ),
               Positioned(
-                bottom: 2,
+                bottom: 4,
                 right: 10,
                 child: Row(
                   children: [
@@ -119,6 +122,19 @@ class SenderFileMessageCard extends StatelessWidget {
                         color: Colors.white60,
                       ),
                     ),
+                    const Gap(5),
+                    if (isRead)
+                      const Icon(
+                        Icons.done_all,
+                        size: 20,
+                        color: Colors.white60,
+                      )
+                    else
+                      const Icon(
+                        Icons.done,
+                        size: 20,
+                        color: Colors.white60,
+                      ),
                   ],
                 ),
               )

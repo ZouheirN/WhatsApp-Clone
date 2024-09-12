@@ -1,13 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:whatsapp_clone/widgets/chat_bubbles/my_image_message_card.dart';
-import 'package:whatsapp_clone/widgets/chat_bubbles/my_video_message_card.dart';
-import 'package:whatsapp_clone/widgets/chat_bubbles/my_voice_message.dart';
-import 'package:whatsapp_clone/widgets/chat_bubbles/sender_image_message_card.dart';
-import 'package:whatsapp_clone/widgets/chat_bubbles/sender_voice_message.dart';
+import 'package:whatsapp_clone/widgets/chat_bubbles/private/my_image_message_card.dart';
+import 'package:whatsapp_clone/widgets/chat_bubbles/private/my_video_message_card.dart';
+import 'package:whatsapp_clone/widgets/chat_bubbles/private/my_voice_message_card.dart';
+import 'package:whatsapp_clone/widgets/chat_bubbles/private/sender_image_message_card.dart';
+import 'package:whatsapp_clone/widgets/chat_bubbles/private/sender_video_message_card.dart';
+import 'package:whatsapp_clone/widgets/chat_bubbles/private/sender_voice_message_card.dart';
 
 import '../../../utils/downloaded_files_box.dart';
-import '../../../widgets/chat_bubbles/my_file_message_card.dart';
+import '../../../widgets/chat_bubbles/private/my_file_message_card.dart';
 import '../../../widgets/chat_bubbles/sender_file_message_card.dart';
 import '../cubit/file_message_cubit.dart';
 
@@ -70,26 +71,24 @@ class FileMessageProvider extends StatelessWidget {
                 time: time,
               );
       case 'video':
-        return Text('video');
         return isCurrentUser
             ? MyVideoMessageCard(
                 videoUrl: fileUrl,
                 time: time,
                 isRead: isRead,
               )
-            : MyVideoMessageCard(
+            : SenderVideoMessageCard(
                 videoUrl: fileUrl,
                 time: time,
-                isRead: isRead,
               );
       case 'voice':
         return isCurrentUser
-            ? MyVoiceMessage(
+            ? MyVoiceMessageCard(
                 voiceUrl: fileUrl,
                 time: time,
                 isRead: isRead,
               )
-            : SenderVoiceMessage(
+            : SenderVoiceMessageCard(
                 voiceUrl: fileUrl,
                 time: time,
               );

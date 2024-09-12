@@ -3,21 +3,21 @@ import 'package:flutter/material.dart';
 import 'package:whatsapp_clone/colors.dart';
 import 'package:whatsapp_clone/utils/format_time.dart';
 
-class SenderVoiceMessage extends StatefulWidget {
+class SenderVoiceMessageCard extends StatefulWidget {
   final String voiceUrl;
   final String time;
 
-  const SenderVoiceMessage({
+  const SenderVoiceMessageCard({
     super.key,
     required this.voiceUrl,
     required this.time,
   });
 
   @override
-  State<SenderVoiceMessage> createState() => _SenderVoiceMessageState();
+  State<SenderVoiceMessageCard> createState() => _SenderVoiceMessageCardState();
 }
 
-class _SenderVoiceMessageState extends State<SenderVoiceMessage> {
+class _SenderVoiceMessageCardState extends State<SenderVoiceMessageCard> {
   final AudioPlayer audioPlayer = AudioPlayer();
   bool isPlaying = false;
   Duration duration = const Duration();

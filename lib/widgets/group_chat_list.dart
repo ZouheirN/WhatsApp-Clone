@@ -1,27 +1,28 @@
 import 'package:flutter/material.dart';
-import 'package:whatsapp_clone/features/file_message/ui/file_message_provider.dart';
-import 'package:whatsapp_clone/services/chat_service.dart';
-import 'package:whatsapp_clone/widgets/chat_bubbles/private/my_message_card.dart';
-import 'package:whatsapp_clone/widgets/chat_bubbles/private/sender_message_card.dart';
+import 'package:whatsapp_clone/main.dart';
+import 'package:whatsapp_clone/models/group_message.dart';
+import 'package:whatsapp_clone/services/group_chat_service.dart';
+import 'package:whatsapp_clone/widgets/chat_bubbles/group/my_group_message_card.dart';
+import 'package:whatsapp_clone/widgets/chat_bubbles/group/sender_group_message_card.dart';
 
-class ChatList extends StatelessWidget {
+class GroupChatList extends StatelessWidget {
+  final String groupId;
   final String senderId;
-  final String receiverId;
   final ScrollController scrollController;
 
-  ChatList({
+  GroupChatList({
     super.key,
-    required this.senderId,
-    required this.receiverId,
+    required this.groupId,
     required this.scrollController,
+    required this.senderId,
   });
 
-  final ChatService _chatService = ChatService();
+  final GroupChatService _groupChatService = GroupChatService();
 
   @override
   Widget build(BuildContext context) {
     return StreamBuilder(
-      stream: _chatService.getMessages(receiverId, senderId),
+      stream: _groupChatService.getMessages(groupId),
       builder: (context, snapshot) {
         if (snapshot.hasError) {
           return const Center(
@@ -35,20 +36,8 @@ class ChatList extends StatelessWidget {
           );
         }
 
-        // Once the messages are loaded or updated, scroll to the bottom
-        // WidgetsBinding.instance.addPostFrameCallback((_) {
-        //   if (scrollController.hasClients) {
-        //     // scrollController.animateTo(
-        //     //   scrollController.position.maxScrollExtent + 200,
-        //     //   duration: const Duration(milliseconds: 300),
-        //     //   curve: Curves.easeOut,
-        //     // );
-        //     scrollController.jumpTo(scrollController.position.maxScrollExtent);
-        //   }
-        // });
-
         // Set the isRead status to true
-        _chatService.markMessagesAsRead(receiverId, senderId);
+        _groupChatService.markMessagesAsRead(senderId, groupId);
 
         return ListView(
           controller: scrollController,
@@ -66,26 +55,19 @@ class ChatList extends StatelessWidget {
                       data['timestamp'].toDate().toString().substring(11, 16);
 
                   if (data['type'] != null) {
-                    return FileMessageProvider(
-                      isCurrentUser: isCurrentUser,
-                      fileUrl: data['fileUrl'],
-                      fileName: data['fileName'],
-                      time: parsedTime,
-                      isRead: data['isRead'],
-                      type: data['type'],
-                      caption: data['caption'],
-                    );
+                    return Text(data.toString());
                   }
 
                   if (isCurrentUser) {
-                    return MyMessageCard(
+                    return MyGroupMessageCard(
                       message: data['message'],
                       time: parsedTime,
                       isRead: data['isRead'],
                     );
                   } else {
-                    return SenderMessageCard(
+                    return SenderGroupMessageCard(
                       message: data['message'],
+                      senderProfileUrl: data['senderProfileUrl'],
                       time: parsedTime,
                     );
                   }

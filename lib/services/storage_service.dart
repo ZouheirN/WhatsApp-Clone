@@ -80,7 +80,7 @@ class StorageService {
 
       await uploadTask.whenComplete(() async {
         final String fileUrl = await ref.getDownloadURL();
-      await  FirebaseFirestore.instance
+        await FirebaseFirestore.instance
             .collection('users')
             .doc(currentUserId)
             .update({'profilePic': fileUrl});
@@ -96,7 +96,8 @@ class StorageService {
 
   Future<String?> uploadGroupProfilePicture(String groupId, File file) async {
     try {
-      final Reference ref = _storage.ref().child('group_chat_pictures/$groupId.jpg');
+      final Reference ref =
+          _storage.ref().child('group_chat_pictures/$groupId.jpg');
       final UploadTask uploadTask = ref.putFile(file);
 
       await uploadTask.whenComplete(() async {
@@ -108,5 +109,30 @@ class StorageService {
     }
 
     return null;
+  }
+
+  Future<List<String>> uploadGroupFiles(
+      String groupId, List<File> files, List<String> fileNames) async {
+    List<String> fileUrls = [];
+
+    for (int i = 0; i < files.length; i++) {
+      final File file = files[i];
+      final String fileName = fileNames[i];
+
+      try {
+        final Reference ref =
+            _storage.ref().child('group_chats/$groupId/$fileName');
+        final UploadTask uploadTask = ref.putFile(file);
+
+        await uploadTask.whenComplete(() async {
+          final String fileUrl = await ref.getDownloadURL();
+          fileUrls.add(fileUrl);
+        });
+      } on PlatformException catch (e) {
+        logger.e('Failed to upload file: $e');
+      }
+    }
+
+    return fileUrls;
   }
 }
