@@ -4,7 +4,7 @@ class GroupMessage {
   final String senderId;
   final String senderPhoneNumber;
   final String senderProfileUrl;
-  final String groupChatId;
+  final String groupId;
   final String message;
   final Timestamp timestamp;
   final List<GroupReadStatus> isRead;
@@ -13,7 +13,7 @@ class GroupMessage {
     required this.senderId,
     required this.senderPhoneNumber,
     required this.senderProfileUrl,
-    required this.groupChatId,
+    required this.groupId,
     required this.message,
     required this.timestamp,
     this.isRead = const [],
@@ -24,7 +24,7 @@ class GroupMessage {
       'senderId': senderId,
       'senderPhoneNumber': senderPhoneNumber,
       'senderProfileUrl': senderProfileUrl,
-      'groupChatId': groupChatId,
+      'groupId': groupId,
       'message': message,
       'timestamp': timestamp,
       'isRead': isRead,
@@ -47,5 +47,4 @@ class GroupReadStatus {
       'isRead': isRead,
     };
   }
-
 }

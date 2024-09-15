@@ -34,12 +34,12 @@ class MobileScreenLayout extends StatelessWidget {
               itemBuilder: (context) {
                 return [
                   const PopupMenuItem(
-                    child: Text('New group'),
                     value: 1,
+                    child: Text('New group'),
                   ),
                   const PopupMenuItem(
-                    child: Text('Settings'),
                     value: 2,
+                    child: Text('Settings'),
                   ),
                 ];
               },

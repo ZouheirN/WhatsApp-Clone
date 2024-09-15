@@ -7,9 +7,14 @@ import 'package:whatsapp_clone/screens/camera_image_view.dart';
 import 'package:whatsapp_clone/screens/camera_video_view.dart';
 
 class CameraScreen extends StatefulWidget {
-  final String receiverId;
+  final String? receiverId;
+  final bool isGroup;
 
-  const CameraScreen({super.key, required this.receiverId});
+  const CameraScreen({
+    super.key,
+    required this.receiverId,
+    this.isGroup = false,
+  });
 
   @override
   State<CameraScreen> createState() => _CameraScreenState();
@@ -46,7 +51,8 @@ class _CameraScreenState extends State<CameraScreen> {
       MaterialPageRoute(
         builder: (context) => CameraImageViewScreen(
           image: file,
-          receiverId: widget.receiverId,
+          receiverId: widget.receiverId!,
+          isGroup: widget.isGroup,
         ),
       ),
     );
@@ -134,7 +140,7 @@ class _CameraScreenState extends State<CameraScreen> {
                                   MaterialPageRoute(
                                     builder: (context) => CameraVideoViewScreen(
                                       video: video,
-                                      receiverId: widget.receiverId,
+                                      receiverId: widget.receiverId!,
                                     ),
                                   ),
                                 );

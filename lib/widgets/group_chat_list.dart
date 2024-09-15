@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:whatsapp_clone/features/file_message/ui/file_message_provider.dart';
 import 'package:whatsapp_clone/main.dart';
-import 'package:whatsapp_clone/models/group_message.dart';
 import 'package:whatsapp_clone/services/group_chat_service.dart';
 import 'package:whatsapp_clone/widgets/chat_bubbles/group/my_group_message_card.dart';
 import 'package:whatsapp_clone/widgets/chat_bubbles/group/sender_group_message_card.dart';
@@ -54,8 +54,20 @@ class GroupChatList extends StatelessWidget {
                   final String parsedTime =
                       data['timestamp'].toDate().toString().substring(11, 16);
 
+                  logger.d(data);
+
                   if (data['type'] != null) {
-                    return Text(data.toString());
+                    return FileMessageProvider(
+                      isCurrentUser: isCurrentUser,
+                      fileUrl: data['fileUrl'],
+                      fileName: data['fileName'],
+                      time: parsedTime,
+                      isGroupRead: data['isRead'],
+                      type: data['type'],
+                      caption: data['caption'],
+                      isGroup: true,
+                      senderProfileUrl: data['senderProfileUrl'],
+                    );
                   }
 
                   if (isCurrentUser) {

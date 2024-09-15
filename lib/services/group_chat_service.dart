@@ -97,12 +97,47 @@ class GroupChatService {
       senderId: currentUserId,
       senderPhoneNumber: currentUserPhoneNumber,
       senderProfileUrl: senderProfileUrl,
-      groupChatId: groupId,
+      groupId: groupId,
       message: message,
       timestamp: timestamp,
     );
 
     await groupChatDocRef.collection('messages').add(newGroupMessage.toMap());
+  }
+
+  Future<void> sendGroupFiles({
+    required String groupId,
+    required List<String> fileUrls,
+    required List<String> fileNames,
+  }) async {
+    final String currentUserId = _auth.currentUser!.uid;
+    final String currentUserPhoneNumber = _auth.currentUser!.phoneNumber!;
+    final Timestamp timestamp = Timestamp.now();
+
+    final senderProfileUrl = await _firestore
+        .collection('users')
+        .doc(currentUserId)
+        .get()
+        .then((doc) => doc.data()!['profilePic']);
+
+    for (String fileUrl in fileUrls) {
+      GroupFileMessage newFileMessage = GroupFileMessage(
+        senderId: currentUserId,
+        senderPhoneNumber: currentUserPhoneNumber,
+        groupId: groupId,
+        fileUrl: fileUrl,
+        fileName: fileNames[fileUrls.indexOf(fileUrl)],
+        timestamp: timestamp,
+        type: 'file',
+        senderProfileUrl: senderProfileUrl,
+      );
+
+      await _firestore
+          .collection('group_chats')
+          .doc(groupId)
+          .collection('messages')
+          .add(newFileMessage.toMap());
+    }
   }
 
   Future<void> sendVoiceMessages({
@@ -114,6 +149,12 @@ class GroupChatService {
     final String currentUserPhoneNumber = _auth.currentUser!.phoneNumber!;
     final Timestamp timestamp = Timestamp.now();
 
+    final senderProfileUrl = await _firestore
+        .collection('users')
+        .doc(currentUserId)
+        .get()
+        .then((doc) => doc.data()!['profilePic']);
+
     for (String voiceMessageUrl in voiceMessagesUrl) {
       GroupFileMessage newVoiceMessage = GroupFileMessage(
         senderId: currentUserId,
@@ -123,6 +164,7 @@ class GroupChatService {
         fileName: voiceMessageNames[voiceMessagesUrl.indexOf(voiceMessageUrl)],
         timestamp: timestamp,
         type: 'voice',
+        senderProfileUrl: senderProfileUrl,
       );
 
       await _firestore
