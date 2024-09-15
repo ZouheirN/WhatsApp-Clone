@@ -140,6 +140,43 @@ class GroupChatService {
     }
   }
 
+  Future<void> sendImages({
+    required String groupId,
+    required List<String> imagesUrl,
+    required List<String> imageNames,
+    required List<String?> captions,
+  }) async {
+    final String currentUserId = _auth.currentUser!.uid;
+    final String currentUserPhoneNumber = _auth.currentUser!.phoneNumber!;
+    final Timestamp timestamp = Timestamp.now();
+
+    final senderProfileUrl = await _firestore
+        .collection('users')
+        .doc(currentUserId)
+        .get()
+        .then((doc) => doc.data()!['profilePic']);
+
+    for (String imageUrl in imagesUrl) {
+      GroupFileMessage newImageMessage = GroupFileMessage(
+        senderId: currentUserId,
+        senderPhoneNumber: currentUserPhoneNumber,
+        groupId: groupId,
+        fileUrl: imageUrl,
+        fileName: imageNames[imagesUrl.indexOf(imageUrl)],
+        timestamp: timestamp,
+        caption: captions[imagesUrl.indexOf(imageUrl)],
+        type: 'image',
+        senderProfileUrl: senderProfileUrl,
+      );
+
+      await _firestore
+          .collection('group_chats')
+          .doc(groupId)
+          .collection('messages')
+          .add(newImageMessage.toMap());
+    }
+  }
+
   Future<void> sendVoiceMessages({
     required String groupId,
     required List<String> voiceMessagesUrl,

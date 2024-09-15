@@ -54,8 +54,6 @@ class GroupChatList extends StatelessWidget {
                   final String parsedTime =
                       data['timestamp'].toDate().toString().substring(11, 16);
 
-                  logger.d(data);
-
                   if (data['type'] != null) {
                     return FileMessageProvider(
                       isCurrentUser: isCurrentUser,

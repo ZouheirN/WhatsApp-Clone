@@ -242,6 +242,8 @@ class _MobileGroupChatScreenState extends State<MobileGroupChatScreen> {
             pickFiles: _pickFiles,
             sendVoiceMessage: _sendVoiceMessage,
             sendMessage: _sendMessage,
+            groupId: widget.groupId,
+            isGroup: true,
           ),
         ],
       ),

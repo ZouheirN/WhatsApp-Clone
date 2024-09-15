@@ -293,6 +293,8 @@ class _MobileChatScreenState extends State<MobileChatScreen> {
             sendMessage: _sendMessage,
             sendVoiceMessage: _sendVoiceMessage,
             soundRecorder: _soundRecorder,
+            isGroup: false,
+            groupId: null,
           ),
         ],
       ),

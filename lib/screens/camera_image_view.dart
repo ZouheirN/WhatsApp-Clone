@@ -4,20 +4,22 @@ import 'package:camera/camera.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:whatsapp_clone/colors.dart';
-import 'package:whatsapp_clone/main.dart';
 import 'package:whatsapp_clone/services/chat_service.dart';
+import 'package:whatsapp_clone/services/group_chat_service.dart';
 import 'package:whatsapp_clone/services/storage_service.dart';
 
 class CameraImageViewScreen extends StatefulWidget {
   final XFile image;
   final String? receiverId;
   final bool isGroup;
+  final String? groupId;
 
   const CameraImageViewScreen({
     super.key,
     required this.image,
     required this.receiverId,
     this.isGroup = false,
+    this.groupId,
   });
 
   @override
@@ -33,6 +35,7 @@ class _CameraImageViewScreenState extends State<CameraImageViewScreen> {
 
   final StorageService _storageService = StorageService();
   final ChatService _chatService = ChatService();
+  final GroupChatService _groupChatService = GroupChatService();
 
   @override
   void initState() {
@@ -47,6 +50,10 @@ class _CameraImageViewScreenState extends State<CameraImageViewScreen> {
         : _captionController.text.trim();
 
     if (kIsWeb) {
+      if (widget.isGroup) {
+        // todo handle group image upload
+      }
+
       final urls = await _storageService.uploadFilesWeb(
         widget.receiverId!,
         [File(previewImage.path).readAsBytesSync()],
@@ -60,18 +67,33 @@ class _CameraImageViewScreenState extends State<CameraImageViewScreen> {
         captions: [caption],
       );
     } else {
-      final urls = await _storageService.uploadFiles(
-        widget.receiverId!,
-        [File(previewImage.path)],
-        [previewImage.name],
-      );
+      if (widget.isGroup) {
+        final urls = await _storageService.uploadGroupFiles(
+          widget.groupId!,
+          [File(previewImage.path)],
+          [previewImage.name],
+        );
 
-      _chatService.sendImages(
-        receiverId: widget.receiverId!,
-        imagesUrl: urls,
-        imageNames: [previewImage.name],
-        captions: [caption],
-      );
+        _groupChatService.sendImages(
+          groupId: widget.groupId!,
+          imagesUrl: urls,
+          imageNames: [previewImage.name],
+          captions: [caption],
+        );
+      } else {
+        final urls = await _storageService.uploadFiles(
+          widget.receiverId!,
+          [File(previewImage.path)],
+          [previewImage.name],
+        );
+
+        _chatService.sendImages(
+          receiverId: widget.receiverId!,
+          imagesUrl: urls,
+          imageNames: [previewImage.name],
+          captions: [caption],
+        );
+      }
     }
 
     isUploading.value = false;

@@ -7,7 +7,7 @@ import 'package:whatsapp_clone/widgets/chat_bubbles/group/my_voice_group_message
 import 'package:whatsapp_clone/widgets/chat_bubbles/group/sender_file_group_message_card.dart';
 import 'package:whatsapp_clone/widgets/chat_bubbles/group/sender_image_group_message_card.dart';
 import 'package:whatsapp_clone/widgets/chat_bubbles/group/sender_video_group_message_card.dart';
-import 'package:whatsapp_clone/widgets/chat_bubbles/group/sender_voice_message_card.dart';
+import 'package:whatsapp_clone/widgets/chat_bubbles/group/sender_voice_group_message_card.dart';
 import 'package:whatsapp_clone/widgets/chat_bubbles/private/my_image_message_card.dart';
 import 'package:whatsapp_clone/widgets/chat_bubbles/private/my_video_message_card.dart';
 import 'package:whatsapp_clone/widgets/chat_bubbles/private/my_voice_message_card.dart';

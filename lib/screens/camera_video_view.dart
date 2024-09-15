@@ -10,7 +10,7 @@ import 'package:whatsapp_clone/services/storage_service.dart';
 
 class CameraVideoViewScreen extends StatefulWidget {
   final XFile video;
-  final String receiverId;
+  final String? receiverId;
 
   const CameraVideoViewScreen({super.key, required this.video, required this.receiverId});
 
@@ -36,26 +36,26 @@ class _CameraVideoViewScreenState extends State<CameraVideoViewScreen> {
 
     if (kIsWeb) {
       final urls = await _storageService.uploadFilesWeb(
-        widget.receiverId,
+        widget.receiverId!,
         [File(widget.video.path).readAsBytesSync()],
         [widget.video.name],
       );
 
       _chatService.sendVideos(
-        receiverId: widget.receiverId,
+        receiverId: widget.receiverId!,
         videosUrl: urls,
         videoNames: [widget.video.name],
         captions: [caption],
       );
     } else {
       final urls = await _storageService.uploadFiles(
-        widget.receiverId,
+        widget.receiverId!,
         [File(widget.video.path)],
         [widget.video.name],
       );
 
       _chatService.sendVideos(
-        receiverId: widget.receiverId,
+        receiverId: widget.receiverId!,
         videosUrl: urls,
         videoNames: [widget.video.name],
         captions: [caption],

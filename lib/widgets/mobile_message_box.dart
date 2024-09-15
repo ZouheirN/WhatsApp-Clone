@@ -19,6 +19,7 @@ class MobileMessageBox extends StatelessWidget {
   final void Function(String filePath) sendVoiceMessage;
   final void Function() sendMessage;
   final bool isGroup;
+  final String? groupId;
 
   const MobileMessageBox({
     super.key,
@@ -33,6 +34,7 @@ class MobileMessageBox extends StatelessWidget {
     required this.sendVoiceMessage,
     required this.sendMessage,
     this.isGroup = false,
+    required this.groupId,
   });
 
   @override
@@ -122,6 +124,7 @@ class MobileMessageBox extends StatelessWidget {
                                           builder: (context) => CameraScreen(
                                             receiverId: receiverId,
                                             isGroup: isGroup,
+                                            groupId: groupId,
                                           ),
                                         ),
                                       );
